@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 public class App extends Application implements IMoveObserver{
     private AbstractWorldMap map;
     private Stage primaryStage;
@@ -158,4 +158,7 @@ public class App extends Application implements IMoveObserver{
     public void moveHappened() {
         Platform.runLater(this::updateGrid);
     }
+
+
 }
+*/

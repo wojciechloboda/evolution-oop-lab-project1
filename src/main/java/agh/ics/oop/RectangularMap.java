@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+/*
+
+
 public class RectangularMap extends AbstractWorldMap{
     private final Vector2d boundsLowerLeft;
     private final Vector2d boundsUpperRight;
@@ -11,15 +14,15 @@ public class RectangularMap extends AbstractWorldMap{
     }
 
     @Override
-    public boolean place (Animal animal) throws IllegalArgumentException{
-        if(!canMoveTo(animal.getPosition())){
-            if(!animal.getPosition().follows(boundsLowerLeft) || !animal.getPosition().precedes(boundsUpperRight)){
-                throw new IllegalArgumentException("Position " + animal.getPosition() + " is out of map bounds");
+    public boolean place (OldAnimal oldAnimal) throws IllegalArgumentException{
+        if(!canMoveTo(oldAnimal.getPosition())){
+            if(!oldAnimal.getPosition().follows(boundsLowerLeft) || !oldAnimal.getPosition().precedes(boundsUpperRight)){
+                throw new IllegalArgumentException("Position " + oldAnimal.getPosition() + " is out of map bounds");
             }
-            throw new IllegalArgumentException("Position " + animal.getPosition() + " is already taken by another animal");
+            throw new IllegalArgumentException("Position " + oldAnimal.getPosition() + " is already taken by another animal");
         }
-        animal.addObserver(this);
-        elementsMap.put(animal.getPosition(), animal);
+        oldAnimal.addObserver(this);
+        elementsMap.put(oldAnimal.getPosition(), oldAnimal);
         return true;
     }
 
@@ -42,3 +45,6 @@ public class RectangularMap extends AbstractWorldMap{
         return boundsUpperRight;
     }
 }
+
+
+ */

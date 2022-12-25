@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import java.util.List;
+
 /**
  * The map visualizer converts the {@link IWorldMap} map into a string
  * representation.
@@ -73,8 +75,11 @@ public class MapVisualizer {
         String result = null;
         if (this.map.isOccupied(currentPosition)) {
             Object object = this.map.objectAt(currentPosition);
-            if (object != null) {
+            if(object instanceof Grass){
                 result = object.toString();
+            }
+            else if (object != null) {
+                result = Integer.toString(((List<IMapElement>)object).size());
             } else {
                 result = EMPTY_CELL;
             }

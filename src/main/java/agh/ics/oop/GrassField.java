@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import java.util.concurrent.ThreadLocalRandom;
+/*
 
 public class GrassField extends AbstractWorldMap{
     private final int grassElementsCount;
@@ -25,7 +26,7 @@ public class GrassField extends AbstractWorldMap{
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        if(objectAt(position) instanceof Animal){
+        if(objectAt(position) instanceof OldAnimal){
             return false;
         }
 
@@ -37,7 +38,7 @@ public class GrassField extends AbstractWorldMap{
         if(!canMoveTo(animal.getPosition())){
             throw new IllegalArgumentException("Position " + animal.getPosition() + " is already taken by another animal");
         }
-        animal.addObserver(this);
+        animal.addPositionChangeObserver(this);
         animal.addObserver(this.mapBoundry);
         elementsMap.put(animal.getPosition(), animal);
         mapBoundry.addElement(animal.getPosition(), MapElementTypes.ANIMAL);
@@ -79,3 +80,5 @@ public class GrassField extends AbstractWorldMap{
         }
     }
 }
+
+ */

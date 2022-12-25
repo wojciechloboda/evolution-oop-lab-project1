@@ -2,6 +2,8 @@ package agh.ics.oop;
 
 import java.util.HashMap;
 import java.util.Map;
+/*
+
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected final MapVisualizer mVis;
@@ -41,3 +43,4 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return mVis.draw(getLeftLowerBound(), getRightUpperBound());
     }
 }
+*/

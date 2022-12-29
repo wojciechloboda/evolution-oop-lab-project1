@@ -1,32 +1,27 @@
 package agh.ics.oop;
-import agh.ics.oop.map.AbstractEvolutionMap;
-import agh.ics.oop.map.EarthMap;
+
+import agh.ics.oop.genotype.CorrectionMutationHandler;
+import agh.ics.oop.genotype.CrazyNextActGeneGenerator;
+import agh.ics.oop.gui.App;
+import agh.ics.oop.map.*;
+import javafx.application.Application;
 
 public class World {
     public static void main(String[] args) {
-        //Application.launch(App.class, args);
+        Application.launch(App.class, args);
 
+        /*
 
-        IMapBoundsHandler boundsHandler = new PrimitiveBoundsHandler();
-        AbstractEvolutionMap evolutionMap = new EarthMap(6, 6, boundsHandler, 5);
+        SimulationParameters simParams = JsonConfigHandler.getParametersFromFile("src/main/resources/params.json");
 
-        SimulationParameters simParams = new SimulationParameters(
-            2,
-            5,
-            5,
-            5,
-            5,
-            3,
-            0,
-            3,
-            new RandomMutationHandler(),
-            8,
-            new StableActGeneGenerator(),
-            evolutionMap);
-
-        SimulationEngine engine = new SimulationEngine(simParams);
+        AbstractEvolutionMap evolutionMap = MapCreator.createMap(simParams);
+        SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
         Thread engineThread = new Thread(engine);
         engineThread.start();
+
+         */
+
+
     }
 }
 

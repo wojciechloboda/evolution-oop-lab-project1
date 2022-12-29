@@ -1,0 +1,97 @@
+package agh.ics.oop.gui;
+
+import agh.ics.oop.IDayPassedObserver;
+import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.animal.Animal;
+import agh.ics.oop.map.AbstractEvolutionMap;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
+    private final Map<String, Label> parameterValMap = new HashMap<>();
+    private final Animal animal;
+    private final Double width;
+    private final SimulationEngine engine;
+    private boolean isAlive = true;
+
+    private HBox createStatEntry(String key, String name){
+        var parameterName = new Label(name);
+        var parameterVal = new Label("0");
+        parameterName.setPrefWidth(width * 0.75);
+        parameterVal.setPrefWidth(width * 0.25);
+        parameterValMap.put(key, parameterVal);
+        HBox entry = new HBox(parameterName, parameterVal);
+        return entry;
+    }
+
+    public AnimalStatPanel(SimulationEngine engine, Animal animal, Double width){
+        super();
+        this.width = width;
+        this.engine = engine;
+        engine.addDayPassedObserver(this);
+        this.animal = animal;
+
+        var content = new VBox();
+
+        this.setStyle("-fx-background-color: #" + "ffffff");
+
+        var title = new Label("Wybrane zwierze:");
+        title.setPadding(new Insets(10,10,10,10));
+        title.setMinWidth(width);
+        title.setAlignment(Pos.TOP_CENTER);
+        this.setTop(title);
+
+
+        content.getChildren().add(createStatEntry("status", "Status:"));
+        content.getChildren().add(createStatEntry("genome", "Genom:"));
+        content.getChildren().add(createStatEntry("actGenomePart", "Aktywna czesc genomu:"));
+        content.getChildren().add(createStatEntry("energy", "Energia:"));
+        content.getChildren().add(createStatEntry("grassEaten", "Zjedzone rosliny:"));
+        content.getChildren().add(createStatEntry("children","Ilosc dzieci:"));
+        content.getChildren().add(createStatEntry("lifeTime","Dlugosc zycia:"));
+        content.getChildren().add(createStatEntry("death", "Dzien smierci:"));
+
+        content.setSpacing(10.0);
+        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setCenter(content);
+
+        updateStats();
+    }
+
+    @Override
+    public void dayPassed() {
+        if(isAlive){
+            Platform.runLater(this::updateStats);
+            if(!engine.isAnimalAlive(animal)){
+                isAlive = false;
+            }
+        }
+    }
+
+    private void updateStats(){
+        parameterValMap.get("status").setText("Zyje");
+        parameterValMap.get("genome").setText(animal.getGenome().toString());
+        parameterValMap.get("actGenomePart").setText(Integer.toString(animal.getGenome().getActGene()));
+        parameterValMap.get("energy").setText(Integer.toString(animal.getEnergy()));
+        parameterValMap.get("grassEaten").setText(Integer.toString(animal.getNumOfGrassEaten()));
+        parameterValMap.get("children").setText(Integer.toString(animal.getNumOfChildren()));
+        parameterValMap.get("lifeTime").setText(Integer.toString(engine.getCurrentDay() - animal.getBornAtDay()));
+        parameterValMap.get("death").setText(" - ");
+
+        if(!engine.isAnimalAlive(animal)){
+            parameterValMap.get("status").setText("Nie zyje");
+            parameterValMap.get("actGenomePart").setText(" - ");
+            parameterValMap.get("energy").setText("0");
+            parameterValMap.get("death").setText(Integer.toString(engine.getCurrentDay()));
+        }
+    }
+}

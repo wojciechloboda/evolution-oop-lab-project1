@@ -1,0 +1,20 @@
+
+{
+  "parameterSetName": "JOL",
+  "width": 10,
+  "height": 10,
+  "numOfInitGrass": 20,
+  "boundsHandlerType": "hell",
+  "grassGrowthType": "green",
+  "energyFromGrass": 3,
+  "numOfGrassGrowing": 10,
+  "numOfInitAnimals": 50,
+  "startAnimalEnergy": 4,
+  "energyNeededForNewAnimal":  1,
+  "energyLossForNewAnimal": 1,
+  "minNumOfMutations": 0,
+  "maxNumOfMutations": 3,
+  "mutationHandlerType": "correction",
+  "genomeLength": 5,
+  "nextActGeneGeneratorType": "stable"
+}

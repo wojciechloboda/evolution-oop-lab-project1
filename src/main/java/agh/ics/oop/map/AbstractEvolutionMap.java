@@ -1,17 +1,21 @@
 package agh.ics.oop.map;
 
 import agh.ics.oop.*;
+import agh.ics.oop.animal.Animal;
+import agh.ics.oop.animal.AnimalStateAfterMove;
+import agh.ics.oop.animal.IAnimalPositionChangeObserver;
 
 import java.util.*;
 
 public abstract class AbstractEvolutionMap
-        implements IWorldMap, IAnimalPositionChangeObserver, IAnimalDeathObserver {
+        implements IWorldMap, IAnimalPositionChangeObserver {
     protected final Map<Vector2d, List<Animal>> animalsMap = new HashMap<>();
     protected final Map<Vector2d, Grass> grassMap = new HashMap<>();
     private final Vector2d rightUpperBound;
     private final Vector2d leftLowerBound;
     private final IMapBoundsHandler boundsHandler; //Hell or earth
-    private final MapVisualizer mVis = new MapVisualizer(this);
+    private final Random rand = new Random();
+    private final List<IElementRemovedObserver> elementInMapObservers = new ArrayList<>();
 
 
     public AbstractEvolutionMap(int width, int height, IMapBoundsHandler boundsHandler){
@@ -27,13 +31,16 @@ public abstract class AbstractEvolutionMap
     }
 
     protected void removeAnimalFromPosition(Animal animal, Vector2d position){
-        Object animals = objectAt(position);
-        if(animals != null){
-            List<IMapElement> listOfElementsOnPosition = (List<IMapElement>) animals;
-            listOfElementsOnPosition.remove(animal);
-            if(listOfElementsOnPosition.size() == 0){
-                animalsMap.remove(position);
-            }
+        animalsMap.get(position).remove(animal);
+        //Object animals = objectAt(position);
+        //if(animals != null){
+        //    List<IMapElement> listOfElementsOnPosition = (List<IMapElement>) animals;
+        //    listOfElementsOnPosition.remove(animal);
+        //
+        // }
+
+        if(animalsMap.get(position).size() == 0){
+            animalsMap.remove(position);
         }
     }
 
@@ -47,10 +54,6 @@ public abstract class AbstractEvolutionMap
             newElements.add(currentAnimal);
             animalsMap.put(currentAnimal.getPosition(), newElements);
         }
-    }
-
-    private void addGrassToPosition(Grass grass){
-
     }
 
     protected abstract void removeGrassFromPosition(Vector2d position);
@@ -77,28 +80,28 @@ public abstract class AbstractEvolutionMap
         if(animalsMap.get(position) == null){
             return grassMap.get(position);
         }
-        return animalsMap.get(position);
+        return animalsMap.get(position).stream().max(Comparator.comparingInt(Animal::getEnergy)).get();
     }
 
-    public PositionAndDirectionPair getActualPositionAfterMove(Vector2d position, ExtendedMapDirection direction) {
+    public AnimalStateAfterMove getAnimalStateAfterMove(Vector2d position, ExtendedMapDirection direction, int energy) {
         if(!position.follows(this.leftLowerBound) || !position.precedes(this.rightUpperBound)){
-            return boundsHandler.getAnimalPosAndDirAfterOutOfBounds(position, direction);
+            return boundsHandler.getAnimalStateAfterMove(position, direction, energy);
         }
         else {
-            return new PositionAndDirectionPair(position, direction);
+            return new AnimalStateAfterMove(position, direction, energy);
         }
     }
 
-    protected Vector2d getRightUpperBound(){
+    public Vector2d getRightUpperBound(){
         return this.rightUpperBound;
     }
 
-    protected Vector2d getLeftLowerBound(){
+    public Vector2d getLeftLowerBound(){
         return this.leftLowerBound;
     }
 
     public String toString(){
-        return mVis.draw(getLeftLowerBound(), getRightUpperBound());
+        return "Animal";
     }
 
     public List<Animal> getAnimalsAtPosition(Vector2d position){
@@ -113,7 +116,56 @@ public abstract class AbstractEvolutionMap
         this.removeGrassFromPosition(position);
     }
 
-    protected abstract void growPlants(int numberOfPlants);
+    public abstract void growPlants(int numberOfPlants);
     public abstract void animalDied(Animal animal);
+
+    protected Vector2d getRandomPosition(Set<Vector2d> priority, Set<Vector2d> normal){
+        Vector2d generatedPos;
+        if(priority.size() > 0 && normal.size() > 0){
+            if(rand.nextInt(100) < 80){
+                generatedPos = priority.stream().skip(rand.nextInt(priority.size())).findFirst().get();
+                priority.remove(generatedPos);
+            }
+            else{
+                generatedPos = normal.stream().skip(rand.nextInt(normal.size())).findFirst().get();
+                normal.remove(generatedPos);
+            }
+        }
+        else if(priority.size() > 0){
+            generatedPos = priority.stream().skip(rand.nextInt(priority.size())).findFirst().get();
+            priority.remove(generatedPos);
+        }
+        else{
+            generatedPos = normal.stream().skip(rand.nextInt(normal.size())).findFirst().get();
+            normal.remove(generatedPos);
+        }
+
+        return generatedPos;
+    }
+
+    public int getNumOfGrass(){
+        return this.grassMap.size();
+    }
+
+    public int getNumOfFreePositions(){
+        Set<Vector2d> combined = new HashSet<>();
+        combined.addAll(animalsMap.keySet());
+        combined.addAll(grassMap.keySet());
+        return (this.rightUpperBound.x + 1) * (this.rightUpperBound.y + 1) - combined.size();
+    }
+
+    public void addObserver(IElementRemovedObserver obs){
+        this.elementInMapObservers.add(obs);
+    }
+
+    public void removeObserver(IElementRemovedObserver obs){
+        this.elementInMapObservers.remove(obs);
+    }
+
+    protected void removeElementNotify(IMapElement element){
+        for(var obs : this.elementInMapObservers){
+            obs.elementRemoved(element);
+        }
+    }
 
 }

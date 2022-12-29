@@ -1,33 +1,57 @@
 package agh.ics.oop;
 
+import agh.ics.oop.animal.Animal;
+import agh.ics.oop.genotype.GenomeGenerator;
+import agh.ics.oop.genotype.Genotype;
+import agh.ics.oop.genotype.IMutationHandler;
+import agh.ics.oop.genotype.INextActGeneGenerator;
 import agh.ics.oop.map.AbstractEvolutionMap;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class SimulationEngine implements IEngine, Runnable{
-    private final List<Animal> animalList = new ArrayList<>();
+    private final Set<Animal> animalSet = new HashSet<>();
     private final Random rand = new Random();
     private final AbstractEvolutionMap map;
     private final GenomeGenerator genomeGenerator;
     private final SimulationParameters simParams;
+    private final Map<String, Integer> genotypes = new HashMap<>();
+    private double avgAnimalEnergy = 0;
+    private int sumOfDaysLivedByDeadAnimals = 0;
+    private int numOfDeadAnimals = 0;
+    private final INextActGeneGenerator nextActGeneGenerator;
+    private final List<IDayPassedObserver> observersList = new ArrayList<>();
+    private boolean isPaused = false;
+    private int currentDay = 0;
 
-    private void decreaseEnergyAndRemoveDeadAnimals(){
+    private void removeDeadAnimals(int currentDay){
         List<Animal> dead = new ArrayList<>();
-        for(var animal : animalList){
-            animal.decreaseEnergy(1);
+
+        for(var animal : animalSet){
             if(animal.getEnergy() <= 0){
+                sumOfDaysLivedByDeadAnimals += currentDay - animal.getBornAtDay();
+                numOfDeadAnimals += 1;
                 dead.add(animal);
                 map.animalDied(animal);
+                removeGenotype(animal.getGenome());
             }
         }
-        animalList.removeAll(dead);
+        dead.forEach(animalSet::remove);
+
+    }
+
+    private void decreaseAnimalEnergy(){
+        for(var animal : animalSet){
+            animal.decreaseEnergy(1);
+        }
     }
 
     private void animalsEating(int energyBoost){
         Set<Vector2d> handledPosition = new HashSet<Vector2d>();
 
-        for(var animal : animalList){
+        for(var animal : animalSet){
             if(!handledPosition.contains(animal.getPosition()) && map.getGrassAtPosition(animal.getPosition()) != null){
                 var animalsAtPosition = map.getAnimalsAtPosition(animal.getPosition());
                 var bestAnimal = animalsAtPosition.stream()
@@ -47,11 +71,8 @@ public class SimulationEngine implements IEngine, Runnable{
         Set<Vector2d> handledPosition = new HashSet<Vector2d>();
         ArrayList<Animal> createdAnimals = new ArrayList<Animal>();
 
-        for(var animal : animalList){
+        for(var animal : animalSet){
             if(!handledPosition.contains(animal.getPosition())){
-                //logAnimals(map.getAnimalsAtPosition(animal.getPosition()).stream()
-                //        .sorted(Animal::compareTo).collect(Collectors.toList()));
-
                 var animalsFullAtPosition = map.getAnimalsAtPosition(animal.getPosition())
                         .stream()
                         .filter((a) -> a.getEnergy() >= energyLimit)
@@ -64,12 +85,16 @@ public class SimulationEngine implements IEngine, Runnable{
                             .filter((a) -> !a.equals(firstAnimal))
                             .max(Animal::compareTo).get();
 
-                    //reproduce
                     var genome = genomeGenerator.createGenome(firstAnimal, secondAnimal);
                     firstAnimal.decreaseEnergy(this.simParams.energyLossForNewAnimal);
+                    firstAnimal.increaseNumOfChildren();
                     secondAnimal.decreaseEnergy(this.simParams.energyLossForNewAnimal);
+                    secondAnimal.increaseNumOfChildren();
 
-                    Animal newAnimal = new Animal(this.simParams.nextActGeneGenerator, genome, firstAnimal.getPosition(), map, currentDay,
+                    Genotype genotype = new Genotype(genome, this.nextActGeneGenerator);
+                    addGenotype(genotype);
+
+                    Animal newAnimal = new Animal(genotype, firstAnimal.getPosition(), map, currentDay,
                             2 * this.simParams.energyLossForNewAnimal);
                     map.place(newAnimal);
                     createdAnimals.add(newAnimal);
@@ -79,20 +104,14 @@ public class SimulationEngine implements IEngine, Runnable{
                 handledPosition.add(animal.getPosition());
             }
         }
-        animalList.addAll(createdAnimals);
+        animalSet.addAll(createdAnimals);
     }
 
     private List<Integer> createRandomGenome(int genomeLength){
         List<Integer> genome = new ArrayList<>();
-        genome.add(4);
-        genome.add(0);
-        genome.add(0);
-        genome.add(0);
-        genome.add(0);
-        genome.add(0);
-        genome.add(2);
-        genome.add(2);
-
+        for(int i = 0; i < genomeLength; i++){
+            genome.add(rand.nextInt(8));
+        }
         return genome;
     }
 
@@ -106,61 +125,191 @@ public class SimulationEngine implements IEngine, Runnable{
     private void setupAnimals(){
 
         for(int i = 0; i < this.simParams.numOfInitAnimals; i++){
-            var genome = createRandomGenome(this.simParams.genomeLength);
+            var genotype = new Genotype(createRandomGenome(this.simParams.genomeLength),
+                    this.nextActGeneGenerator);
+            addGenotype(genotype);
             var position = getRandomPosition(map);
 
-            Animal animal = new Animal(this.simParams.nextActGeneGenerator, genome, position, map, 0,
+            Animal animal = new Animal(genotype, position, map, 0,
                     this.simParams.startAnimalEnergy);
             map.place(animal);
-            animalList.add(animal);
+            animalSet.add(animal);
         }
     }
 
 
-    public SimulationEngine(SimulationParameters simulationParameters){
-        this.map = simulationParameters.evolutionMap;
+    public SimulationEngine(AbstractEvolutionMap map, SimulationParameters simulationParameters,
+                            IMutationHandler mutationHandler, INextActGeneGenerator nextActGeneGenerator){
+        this.map = map;
         this.genomeGenerator = new GenomeGenerator(
-                simulationParameters.mutationHandler,
+                mutationHandler,
                 simulationParameters.minNumOfMutations,
                 simulationParameters.maxNumOfMutations);
+        this.nextActGeneGenerator = nextActGeneGenerator;
 
         this.simParams = simulationParameters;
         setupAnimals();
     }
 
     //tmp
-    public void logAnimals(List<Animal> animalList){
-        for(int i = 0; i < animalList.size(); i++){
-            System.out.print("Animal: ");
-            System.out.print(i);
+    public void logAnimals(Set<Animal> animalSet){
+        for(var animal : animalSet){
+            System.out.print("Animal ");
+            System.out.print(animal.getPosition().toString());
+            System.out.print(animal.getDirection());
             System.out.print(", Energy: ");
-            System.out.print(animalList.get(i).getEnergy());
+            System.out.print(animal.getEnergy());
             System.out.print(", Day: ");
-            System.out.print(animalList.get(i).getBornAtDay());
+            System.out.print(animal.getBornAtDay());
             System.out.print(", Children: ");
-            System.out.print(animalList.get(i).getNumOfChildren());
+            System.out.print(animal.getNumOfChildren());
             System.out.print(", Genome: ");
-            System.out.println(animalList.get(i).getGenome());
+            System.out.println(animal.getGenome());
         }
         System.out.println("done");
     }
 
     @Override
     public void run(){
-        System.out.println(map.toString());
-        for(int i = 1; i < 10; i++){
-            for(var animal : animalList){
-                animal.move();
-            }
-            this.animalsEating(this.simParams.energyFromGrass);
-            this.animalCreation(this.simParams.energyNeededForNewAnimal, i);
-            map.growPlants(this.simParams.numOfGrassGrowing);
+        currentDay = 1;
+        while(!Thread.interrupted()){
+            System.out.println(Thread.interrupted());
+            if(!isPaused){
+                for(var animal : animalSet){
+                    animal.move();
+                }
+                this.removeDeadAnimals(currentDay);
+                this.animalsEating(this.simParams.energyFromGrass);
+                this.animalCreation(this.simParams.energyNeededForNewAnimal, currentDay);
+                map.growPlants(this.simParams.numOfGrassGrowing);
 
-            System.out.println(map.toString());
-            logAnimals(animalList);
-            this.decreaseEnergyAndRemoveDeadAnimals();
+                updateAvgAnimalEnergy();
+                logAnimals(animalSet);
+                this.decreaseAnimalEnergy();
+                this.removeDeadAnimals(currentDay);
+
+                this.notifyObservers();
+
+                try{
+                    Thread.sleep(800);
+                }
+                catch (InterruptedException ex){
+                    Thread.currentThread().interrupt();
+                }
+                if(animalSet.size() == 0){
+                    Thread.currentThread().interrupt();
+                }
+                currentDay += 1;
+            }
+            else{
+                synchronized (this){
+                    try{
+                        wait();
+                    }
+                    catch(InterruptedException ex){
+                        Thread.currentThread().interrupt();
+                    }
+                    finally {
+                        isPaused = false;
+                    }
+                }
+            }
         }
-        System.out.println(map.toString());
-        logAnimals(animalList);
+    }
+
+    public int getNumOfAnimals(){
+        return this.animalSet.size();
+    }
+
+    public List<Pair<String, Integer>> getSortedGenotypes(){
+        List<Pair<String, Integer>> genomeList = new ArrayList<>();
+        for(var key : this.genotypes.keySet()){
+            genomeList.add(new Pair<>(key, this.genotypes.get(key)));
+        }
+        return genomeList.stream().sorted(Comparator.comparingInt(Pair::getValue)).collect(Collectors.toList());
+    }
+
+    public List<Animal> getAnimalsWithBestGenome(){
+        if(this.getSortedGenotypes().size() == 0){
+            return null;
+        }
+        List<Animal> res = new ArrayList<>();
+        var bestGenome = this.getSortedGenotypes().get(0).getKey();
+        for(var animal : animalSet){
+            if(animal.getGenome().toString().equals(bestGenome)){
+                res.add(animal);
+            }
+        }
+        return res;
+    }
+
+    private void addGenotype(Genotype genotype){
+        if(this.genotypes.get(genotype.toString()) != null){
+            int current = this.genotypes.get(genotype.toString());
+            this.genotypes.put(genotype.toString(), current + 1);
+        }
+        else{
+            this.genotypes.put(genotype.toString(), 1);
+        }
+    }
+
+    private void removeGenotype(Genotype genotype){
+        if(this.genotypes.get(genotype.toString()) > 1){
+            int current = this.genotypes.get(genotype.toString());
+            this.genotypes.put(genotype.toString(), current - 1);
+        }
+        else{
+            this.genotypes.remove(genotype.toString());
+        }
+    }
+
+    private void updateAvgAnimalEnergy(){
+        if(animalSet.size() == 0){
+            this.avgAnimalEnergy = 0;
+            return;
+        }
+        int sum = 0;
+        for(var animal : animalSet){
+            sum += animal.getEnergy();
+        }
+        this.avgAnimalEnergy = (double) sum / (double) animalSet.size();
+    }
+
+    public double getAvgAnimalEnergy(){
+        return this.avgAnimalEnergy;
+    }
+
+    public double getAvgLifetime(){
+        if(numOfDeadAnimals == 0){
+            return 0;
+        }
+
+        return (double) sumOfDaysLivedByDeadAnimals / (double) numOfDeadAnimals;
+    }
+
+    public void addDayPassedObserver(IDayPassedObserver obs){
+        this.observersList.add(obs);
+    }
+
+    public void removeDayPassedObserver(IDayPassedObserver obs){
+        this.observersList.remove(obs);
+    }
+
+    private void notifyObservers(){
+        for(var obs : observersList){
+            obs.dayPassed();
+        }
+    }
+
+    public synchronized void setPaused(){
+        this.isPaused = true;
+    }
+
+    public int getCurrentDay(){
+        return this.currentDay;
+    }
+
+    public boolean isAnimalAlive(Animal animal){
+        return animalSet.contains(animal);
     }
 }

@@ -1,6 +1,8 @@
 package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
+import agh.ics.oop.map.AbstractEvolutionMap;
+import agh.ics.oop.map.MapCreator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -14,8 +16,9 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
-public class App extends Application implements IMoveObserver{
+
+public class App extends Application{
+    /*
     private AbstractWorldMap map;
     private Stage primaryStage;
     private GridPane grid;
@@ -92,11 +95,19 @@ public class App extends Application implements IMoveObserver{
             grid.getColumnConstraints().add(new ColumnConstraints(width));
         }
     }
+    */
 
     @Override
     public void start(Stage primaryStage) {
         this.init();
+        SimulationParameters simParams = JsonConfigHandler.getParametersFromFile("src/main/resources/params.json");
 
+        AbstractEvolutionMap evolutionMap = MapCreator.createMap(simParams);
+        SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
+
+        GuiSimulation guiSimulation = new GuiSimulation(engine, evolutionMap);
+
+        /*
         grid = new GridPane();
         grid.setGridLinesVisible(true);
         setGridConstraints(grid);
@@ -124,11 +135,14 @@ public class App extends Application implements IMoveObserver{
 
         primaryStage.setMaximized(true);
         primaryStage.show();
+         */
     }
 
     @Override
     public void init(){
+        /*
         try{
+
             int grassElementsCount = 10;
             map = new GrassField(10);
             Vector2d[] positions = {new Vector2d(2,2), new Vector2d(3,4)};
@@ -144,7 +158,10 @@ public class App extends Application implements IMoveObserver{
         catch(IllegalArgumentException ex){
             System.out.println(ex.getMessage());
         }
+         */
     }
+
+    /*
 
     private void updateGrid(){
         grid.getChildren().retainAll(grid.getChildren().get(0));
@@ -159,6 +176,7 @@ public class App extends Application implements IMoveObserver{
         Platform.runLater(this::updateGrid);
     }
 
+    */
+
 
 }
-*/

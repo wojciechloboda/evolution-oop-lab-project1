@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 public class GuiElementBox extends BorderPane {
     private final ImageView imageView;
     private final IMapElement element;
-    private final int topEnergy = 50;
+    private final int topEnergy = 30;
     private final double size;
 
     public IMapElement getElement(){
@@ -58,27 +58,10 @@ public class GuiElementBox extends BorderPane {
     }
 
     public void highlight(){
-        //this.setStyle("-fx-background-color: #" + "ff0000");
-        //this.setStyle("-fx-background-fill: black, white");
-        //this.setStyle( "-fx-background-insets: 0, 1");
-        //"-fx-background-fill: black, white"
-        //"-fx-background-insets: 0, 1" ;
-        this.setStyle(
-                "-background-color: transparent, #f4f4f4;" +
-                "-fx-border-width:" + size * 0.1 + ";" +
-                "-fx-border-color: lightgrey;"
-        );
+        this.setStyle("-fx-background-color: " + "rgb(162,16,16)");
     }
 
     public void removeHighlight(){
-        this.setStyle("-fx-background-color: #" + "ffd700");
-    }
-
-    public void highlightBestGenome(){
-        this.setStyle("-fx-background-color: #" + "00d0ff");
-    }
-
-    public void removeHighlightBestGenome(){
-        this.setStyle("-fx-background-color: #" + "ffd700");
+        this.setStyle("");
     }
 }

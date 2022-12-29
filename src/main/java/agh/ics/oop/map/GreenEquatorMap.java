@@ -76,7 +76,7 @@ public class GreenEquatorMap extends AbstractEvolutionMap {
 
     @Override
     public void animalDied(Animal animal) {
-        this.removeAnimalFromPosition(animal, animal.getPosition());
         this.removeElementNotify(animal);
+        this.removeAnimalFromPosition(animal, animal.getPosition());
     }
 }

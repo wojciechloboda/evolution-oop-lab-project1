@@ -60,8 +60,6 @@ public class SimulationEngine implements IEngine, Runnable{
                 bestAnimal.boostEnergy(energyBoost);
                 map.grassEatenAtPosition(animal.getPosition());
 
-                System.out.print("Eating at position: ");
-                System.out.println(animal.getPosition().toString());
                 handledPosition.add(animal.getPosition());
             }
         }
@@ -98,8 +96,6 @@ public class SimulationEngine implements IEngine, Runnable{
                             2 * this.simParams.energyLossForNewAnimal);
                     map.place(newAnimal);
                     createdAnimals.add(newAnimal);
-                    System.out.print("Animal creation at: ");
-                    System.out.println(newAnimal.getPosition());
                 }
                 handledPosition.add(animal.getPosition());
             }
@@ -173,7 +169,6 @@ public class SimulationEngine implements IEngine, Runnable{
     public void run(){
         currentDay = 1;
         while(!Thread.interrupted()){
-            System.out.println(Thread.interrupted());
             if(!isPaused){
                 for(var animal : animalSet){
                     animal.move();
@@ -191,7 +186,7 @@ public class SimulationEngine implements IEngine, Runnable{
                 this.notifyObservers();
 
                 try{
-                    Thread.sleep(800);
+                    Thread.sleep(100);
                 }
                 catch (InterruptedException ex){
                     Thread.currentThread().interrupt();
@@ -226,7 +221,7 @@ public class SimulationEngine implements IEngine, Runnable{
         for(var key : this.genotypes.keySet()){
             genomeList.add(new Pair<>(key, this.genotypes.get(key)));
         }
-        return genomeList.stream().sorted(Comparator.comparingInt(Pair::getValue)).collect(Collectors.toList());
+        return genomeList.stream().sorted((a, b) -> b.getValue() - a.getValue()).collect(Collectors.toList());
     }
 
     public List<Animal> getAnimalsWithBestGenome(){

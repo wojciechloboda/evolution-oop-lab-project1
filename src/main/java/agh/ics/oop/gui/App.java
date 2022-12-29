@@ -102,10 +102,27 @@ public class App extends Application{
         this.init();
         SimulationParameters simParams = JsonConfigHandler.getParametersFromFile("src/main/resources/params.json");
 
-        AbstractEvolutionMap evolutionMap = MapCreator.createMap(simParams);
-        SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
+        //AbstractEvolutionMap evolutionMap = MapCreator.createMap(simParams);
+        //SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
 
-        GuiSimulation guiSimulation = new GuiSimulation(engine, evolutionMap);
+        //GuiSimulation guiSimulation = new GuiSimulation(engine, evolutionMap);
+
+        //AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
+        //SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
+        //GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
+
+        Button start = new Button("start");
+        start.setOnAction(e ->{
+            AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
+            SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
+            GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
+        }
+        );
+
+        primaryStage.setScene(new Scene(start));
+
+        primaryStage.show();
+
 
         /*
         grid = new GridPane();

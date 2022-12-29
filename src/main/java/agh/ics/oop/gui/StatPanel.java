@@ -36,7 +36,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
 
     private BorderPane createGenomeRanking(){
         BorderPane pane = new BorderPane();
-        Label title = new Label("Top 5 genotypow:");
+        Label title = new Label("\n Top 5 genotypow: \n");
         title.setMinWidth(width);
         title.setAlignment(Pos.TOP_CENTER);
         pane.setTop(title);

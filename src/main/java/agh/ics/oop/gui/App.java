@@ -151,7 +151,11 @@ public class App extends Application{
         this.paramInputMap = new HashMap<>();
         var right = new BorderPane();
         right.setPrefWidth(windowWidth * 0.5);
-        right.setTop(new Label("CREATE CONFIGURATION"));
+        var label = new Label("CREATE CONFIGURATION");
+        var titlePane = new BorderPane();
+        titlePane.setPadding(new Insets(windowHeight * 0.02));
+        titlePane.setCenter(label);
+        right.setTop(titlePane);
 
         VBox paramsBox = new VBox();
         paramsBox.setSpacing(windowHeight * 0.005); //HERE
@@ -249,8 +253,12 @@ public class App extends Application{
     private BorderPane createParamVisRight(SimulationParameters params){
         var right = new BorderPane();
         right.setPrefWidth(windowWidth * 0.5);
+        BorderPane titlePane = new BorderPane();
+        var label = new Label("LOADED CONFIGURATION: " + chosenSimParams.getParamsName());
+        titlePane.setPadding(new Insets(windowHeight * 0.02));
+        titlePane.setCenter(label);
         VBox paramsBox = new VBox();
-        right.setTop(new Label("LOADED CONFIGURATION: " + chosenSimParams.getParamsName()));
+        right.setTop(titlePane);
         paramsBox.setSpacing(windowHeight * 0.01); //HERE
 
         paramsBox.getChildren().add(createParamEntry("map height:", Integer.toString(chosenSimParams.getHeight()), windowWidth * 0.5));

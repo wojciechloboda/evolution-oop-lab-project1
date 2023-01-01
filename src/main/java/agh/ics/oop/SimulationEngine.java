@@ -193,7 +193,7 @@ public class SimulationEngine implements IEngine, Runnable{
         }
     }
 
-    public int getNumOfAnimals(){
+    public synchronized int getNumOfAnimals(){
         return this.animalSet.size();
     }
 
@@ -251,11 +251,11 @@ public class SimulationEngine implements IEngine, Runnable{
         this.avgAnimalEnergy = (double) sum / (double) animalSet.size();
     }
 
-    public double getAvgAnimalEnergy(){
+    public synchronized double getAvgAnimalEnergy(){
         return this.avgAnimalEnergy;
     }
 
-    public double getAvgLifetime(){
+    public synchronized double getAvgLifetime(){
         if(numOfDeadAnimals == 0){
             return 0;
         }
@@ -271,7 +271,7 @@ public class SimulationEngine implements IEngine, Runnable{
         this.observersList.remove(obs);
     }
 
-    private void notifyObservers(){
+    private synchronized void notifyObservers(){
         for(var obs : observersList){
             obs.dayPassed();
         }
@@ -281,11 +281,11 @@ public class SimulationEngine implements IEngine, Runnable{
         this.isPaused = true;
     }
 
-    public int getCurrentDay(){
+    public synchronized int getCurrentDay(){
         return this.currentDay;
     }
 
-    public boolean isAnimalAlive(Animal animal){
+    public synchronized boolean isAnimalAlive(Animal animal){
         return animalSet.contains(animal);
     }
 }

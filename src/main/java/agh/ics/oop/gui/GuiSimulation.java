@@ -134,11 +134,6 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
         var buttonPanel = createButtonPanel();
         var dummyRight = createDummyRight(windowWeight * 0.3);
-        //var label = new Label("Nie wybrano zwierzecia");
-        //label.setPrefWidth(windowWeight * 0.2);
-        //label.setAlignment(Pos.CENTER);
-        //dummyRight.setPadding(new Insets(10, 10, 10, 10));
-        //dummyRight.setCenter(label);
 
         mainPane = new BorderPane();
         mainPane.setCenter(gridPanel);
@@ -206,10 +201,8 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private BorderPane createDummyRight(Double width){
         BorderPane pane = new BorderPane();
         pane.setPrefWidth(width);
-        engine.addDayPassedObserver(this);
-        var content = new VBox();
-
-        content.setSpacing(10.0);
+        var content = new BorderPane();
+        content.setCenter(new Label("NO ANIMAL CHOSEN"));
         pane.setPadding(new Insets(10, 10, 10, 10));
         pane.setCenter(content);
         return pane;
@@ -229,9 +222,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private BorderPane createButtonPanel(){
         BorderPane buttonPanel = new BorderPane();
         Button startButton = new Button("START");
-        Button stopButton = new Button("PAUZA");
-        Button quitButton = new Button("KONIEC");
-        Button bestGenome = new Button("Zaznacz najlepszy genom");
+        Button stopButton = new Button("||");
+        Button quitButton = new Button("END");
+        Button bestGenome = new Button("MARK BEST GENOME");
 
         bestGenome.setOnAction(e ->{
             if(!showBestGenomeFlag){

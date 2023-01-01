@@ -70,7 +70,7 @@ public abstract class AbstractEvolutionMap
     }
 
     @Override
-    public Object objectAt(Vector2d position) {
+    public synchronized Object objectAt(Vector2d position) {
         if(animalsMap.get(position) == null){
             return grassMap.get(position);
         }
@@ -137,11 +137,11 @@ public abstract class AbstractEvolutionMap
         return generatedPos;
     }
 
-    public int getNumOfGrass(){
+    public synchronized int getNumOfGrass(){
         return this.grassMap.size();
     }
 
-    public int getNumOfFreePositions(){
+    public synchronized int getNumOfFreePositions(){
         Set<Vector2d> combined = new HashSet<>();
         combined.addAll(animalsMap.keySet());
         combined.addAll(grassMap.keySet());

@@ -143,17 +143,12 @@ public abstract class AbstractEvolutionMap
     }
 
     public synchronized int getNumOfFreePositions(){
-        try{
             Set<Vector2d> combined = new HashSet<>();
             combined.addAll(animalsMap.keySet());
             combined.addAll(grassMap.keySet());
             combined.addAll(animalsMap.keySet());
             combined.addAll(grassMap.keySet());
             return (this.rightUpperBound.x + 1) * (this.rightUpperBound.y + 1) - combined.size();
-        }
-        catch(ConcurrentModificationException ex){
-            return 0;
-        }
     }
 
     public void addObserver(IElementRemovedObserver obs){

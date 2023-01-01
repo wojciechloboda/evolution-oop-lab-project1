@@ -9,6 +9,7 @@ import agh.ics.oop.map.AbstractEvolutionMap;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class SimulationEngine implements IEngine, Runnable{
@@ -17,7 +18,7 @@ public class SimulationEngine implements IEngine, Runnable{
     private final AbstractEvolutionMap map;
     private final GenomeGenerator genomeGenerator;
     private final SimulationParameters simParams;
-    private final Map<String, Integer> genotypes = new HashMap<>();
+    private final Map<String, Integer> genotypes = new ConcurrentHashMap<>();
     private double avgAnimalEnergy = 0;
     private int sumOfDaysLivedByDeadAnimals = 0;
     private int numOfDeadAnimals = 0;
@@ -198,16 +199,12 @@ public class SimulationEngine implements IEngine, Runnable{
     }
 
     public synchronized List<Pair<String, Integer>> getSortedGenotypes(){
-        try{
+
             List<Pair<String, Integer>> genomeList = new ArrayList<>();
             for(var key : this.genotypes.keySet()){
                 genomeList.add(new Pair<>(key, this.genotypes.get(key)));
             }
             return genomeList.stream().sorted((a, b) -> b.getValue() - a.getValue()).collect(Collectors.toList());
-        }
-        catch(ConcurrentModificationException ex){
-            return null;
-        }
     }
 
     public List<Animal> getAnimalsWithBestGenome(){

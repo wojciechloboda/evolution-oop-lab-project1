@@ -32,12 +32,6 @@ public abstract class AbstractEvolutionMap
 
     protected void removeAnimalFromPosition(Animal animal, Vector2d position){
         animalsMap.get(position).remove(animal);
-        //Object animals = objectAt(position);
-        //if(animals != null){
-        //    List<IMapElement> listOfElementsOnPosition = (List<IMapElement>) animals;
-        //    listOfElementsOnPosition.remove(animal);
-        //
-        // }
 
         if(animalsMap.get(position).size() == 0){
             animalsMap.remove(position);

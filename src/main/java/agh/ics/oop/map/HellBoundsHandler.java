@@ -18,10 +18,6 @@ public class HellBoundsHandler implements IMapBoundsHandler{
     }
     @Override
     public AnimalStateAfterMove getAnimalStateAfterMove(Vector2d position, ExtendedMapDirection dir, int energy) {
-        System.out.print("END OF WORLD at: ");
-        System.out.print(position.toString());
-        System.out.println(dir.toString());
-
         int x = rand.nextInt(width);
         int y = rand.nextInt(height);
 

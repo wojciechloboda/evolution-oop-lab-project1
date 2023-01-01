@@ -30,60 +30,32 @@ public class GenomeGenerator {
 
         int totalEnergy = firstAnimal.getEnergy() + secondAnimal.getEnergy();
 
-        //System.out.print(firstAnimal.getGenome());
-        //System.out.println(secondAnimal.getGenome());
-
 
         int lim = (int)(((double)firstAnimal.getEnergy() / (double)totalEnergy) * genomeLength);
-        //System.out.print("lim: ");
-        //System.out.print(firstAnimal.getEnergy());
-        //System.out.print(" ");
-        //System.out.print(secondAnimal.getEnergy());
-        //System.out.print(" ");
-        //System.out.println(lim);
 
         if(rand.nextInt(2) == 0){
-            //System.out.println("beginStronger: ");
             genome = firstAnimal.getGenome().getActualGenotype()
                     .stream()
                     .limit(lim)
                     .collect(Collectors.toList());
-
-            //System.out.print(genome);
-
             genome.addAll(secondAnimal.getGenome().getActualGenotype()
                     .stream()
                     .skip(lim)
                     .collect(Collectors.toList()));
-
-            //System.out.println(secondAnimal.getGenome()
-             //       .stream()
-              //      .skip(lim)
-               //     .collect(Collectors.toList()));
         }
         else{
-            //System.out.println("endStronger: ");
             genome = secondAnimal.getGenome().getActualGenotype()
                     .stream()
                     .limit(genomeLength - lim)
                     .collect(Collectors.toList());
 
-            //System.out.print(genome);
-
             genome.addAll(firstAnimal.getGenome().getActualGenotype()
                     .stream()
                     .skip(genomeLength - lim)
                     .collect(Collectors.toList()));
-
-            //System.out.println(firstAnimal.getGenome()
-             //       .stream()
-              //      .skip(genomeLength - lim)
-               //     .collect(Collectors.toList()));
         }
 
-        System.out.print("created: ");
         mutationHandler.mutate(genome, minNumOfMutations, maxNumOfMutations);
-        System.out.println(genome);
 
         return genome;
     }

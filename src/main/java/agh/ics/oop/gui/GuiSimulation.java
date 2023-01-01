@@ -104,6 +104,15 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         if(pathToStats != null){
             withSaving = true;
             this.pathToStats = pathToStats;
+            totalStats.add(new String[]{
+                    "currentDay",
+                    "animalsTotalNum",
+                    "plantsTotalNum",
+                    "freePositionsNum",
+                    "bestGenome",
+                    "avgAnimalEnergy",
+                    "avgAnimalLifetime"});
+            logStats(engine, map);
         }
 
         this.engine = engine;
@@ -360,7 +369,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
                     .forEach(pw::println);
         }
         catch(FileNotFoundException ex){
-            System.out.println("Problems");
+            System.exit(2);
         }
     }
 

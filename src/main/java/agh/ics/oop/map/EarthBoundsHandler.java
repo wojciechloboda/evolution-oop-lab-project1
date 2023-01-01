@@ -14,10 +14,6 @@ public class EarthBoundsHandler implements IMapBoundsHandler{
     }
     @Override
     public AnimalStateAfterMove getAnimalStateAfterMove(Vector2d position, ExtendedMapDirection dir, int energy) {
-        System.out.print("END OF WORLD at: ");
-        System.out.print(position.toString());
-        System.out.println(dir.toString());
-
         int x = Math.floorMod(position.x, width);
         int y = getYCoord(position.y, height - 1);
         ExtendedMapDirection newDir = dir;

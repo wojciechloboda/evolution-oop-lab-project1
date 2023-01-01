@@ -43,22 +43,14 @@ public class App extends Application{
 
     @Override
     public void start(Stage primaryStage) {
-        //this.init();
         this.primaryStage = primaryStage;
         mainPane = new BorderPane();
         mainPane.setPrefWidth(windowWidth);
         mainPane.setPrefHeight(windowHeight);
-        SimulationParameters simParams = JsonConfigHandler.getParametersFromFile("src/main/resources/params.json");
         setPopup();
 
-        //TEMPORARY
-        //AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
-        //SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
-        //GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
-        //TEMPORARY
-
         fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("src/"));
+        fileChooser.setInitialDirectory(new File("configurations/"));
 
         right = setUpRightPane();
         mainPane.setRight(setUpRightPane());

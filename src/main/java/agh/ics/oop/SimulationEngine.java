@@ -147,24 +147,6 @@ public class SimulationEngine implements IEngine, Runnable{
         setupAnimals();
     }
 
-    //tmp
-    public void logAnimals(Set<Animal> animalSet){
-        for(var animal : animalSet){
-            System.out.print("Animal ");
-            System.out.print(animal.getPosition().toString());
-            System.out.print(animal.getDirection());
-            System.out.print(", Energy: ");
-            System.out.print(animal.getEnergy());
-            System.out.print(", Day: ");
-            System.out.print(animal.getBornAtDay());
-            System.out.print(", Children: ");
-            System.out.print(animal.getNumOfChildren());
-            System.out.print(", Genome: ");
-            System.out.println(animal.getGenome());
-        }
-        System.out.println("done");
-    }
-
     @Override
     public void run(){
         currentDay = 1;
@@ -179,7 +161,6 @@ public class SimulationEngine implements IEngine, Runnable{
                 map.growPlants(this.simParams.getNumOfGrassGrowing());
 
                 updateAvgAnimalEnergy();
-                logAnimals(animalSet);
                 this.decreaseAnimalEnergy();
                 this.removeDeadAnimals(currentDay);
 

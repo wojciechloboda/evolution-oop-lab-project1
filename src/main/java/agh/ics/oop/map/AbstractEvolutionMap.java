@@ -6,11 +6,12 @@ import agh.ics.oop.animal.AnimalStateAfterMove;
 import agh.ics.oop.animal.IAnimalPositionChangeObserver;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractEvolutionMap
         implements IWorldMap, IAnimalPositionChangeObserver {
-    protected final Map<Vector2d, List<Animal>> animalsMap = new HashMap<>();
-    protected final Map<Vector2d, Grass> grassMap = new HashMap<>();
+    protected final Map<Vector2d, List<Animal>> animalsMap = new ConcurrentHashMap<>();
+    protected final Map<Vector2d, Grass> grassMap = new ConcurrentHashMap<>();
     private final Vector2d rightUpperBound;
     private final Vector2d leftLowerBound;
     private final IMapBoundsHandler boundsHandler; //Hell or earth

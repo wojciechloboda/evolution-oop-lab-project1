@@ -1,14 +1,14 @@
 
 {
   "parameterSetName": "JOL",
-  "width": 30,
-  "height": 30,
+  "width": 10,
+  "height": 5,
   "numOfInitGrass": 50,
   "boundsHandlerType": "hell",
   "grassGrowthType": "green",
   "energyFromGrass": 10,
   "numOfGrassGrowing": 100,
-  "numOfInitAnimals": 100,
+  "numOfInitAnimals": 10,
   "startAnimalEnergy": 10,
   "energyNeededForNewAnimal":  1,
   "energyLossForNewAnimal": 1,

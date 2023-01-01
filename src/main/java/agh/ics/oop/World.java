@@ -18,7 +18,6 @@ public class World {
         SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
         Thread engineThread = new Thread(engine);
         engineThread.start();
-
          */
 
 

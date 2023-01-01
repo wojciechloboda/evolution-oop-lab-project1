@@ -84,16 +84,16 @@ public class SimulationEngine implements IEngine, Runnable{
                             .max(Animal::compareTo).get();
 
                     var genome = genomeGenerator.createGenome(firstAnimal, secondAnimal);
-                    firstAnimal.decreaseEnergy(this.simParams.energyLossForNewAnimal);
+                    firstAnimal.decreaseEnergy(this.simParams.getEnergyLossForNewAnimal());
                     firstAnimal.increaseNumOfChildren();
-                    secondAnimal.decreaseEnergy(this.simParams.energyLossForNewAnimal);
+                    secondAnimal.decreaseEnergy(this.simParams.getEnergyLossForNewAnimal());
                     secondAnimal.increaseNumOfChildren();
 
                     Genotype genotype = new Genotype(genome, this.nextActGeneGenerator);
                     addGenotype(genotype);
 
                     Animal newAnimal = new Animal(genotype, firstAnimal.getPosition(), map, currentDay,
-                            2 * this.simParams.energyLossForNewAnimal);
+                            2 * this.simParams.getEnergyLossForNewAnimal());
                     map.place(newAnimal);
                     createdAnimals.add(newAnimal);
                 }
@@ -120,14 +120,14 @@ public class SimulationEngine implements IEngine, Runnable{
 
     private void setupAnimals(){
 
-        for(int i = 0; i < this.simParams.numOfInitAnimals; i++){
-            var genotype = new Genotype(createRandomGenome(this.simParams.genomeLength),
+        for(int i = 0; i < this.simParams.getNumOfInitAnimals(); i++){
+            var genotype = new Genotype(createRandomGenome(this.simParams.getGenomeLength()),
                     this.nextActGeneGenerator);
             addGenotype(genotype);
             var position = getRandomPosition(map);
 
             Animal animal = new Animal(genotype, position, map, 0,
-                    this.simParams.startAnimalEnergy);
+                    this.simParams.getStartAnimalEnergy());
             map.place(animal);
             animalSet.add(animal);
         }
@@ -139,8 +139,8 @@ public class SimulationEngine implements IEngine, Runnable{
         this.map = map;
         this.genomeGenerator = new GenomeGenerator(
                 mutationHandler,
-                simulationParameters.minNumOfMutations,
-                simulationParameters.maxNumOfMutations);
+                simulationParameters.getMinNumOfMutations(),
+                simulationParameters.getMaxNumOfMutations());
         this.nextActGeneGenerator = nextActGeneGenerator;
 
         this.simParams = simulationParameters;
@@ -174,9 +174,9 @@ public class SimulationEngine implements IEngine, Runnable{
                     animal.move();
                 }
                 this.removeDeadAnimals(currentDay);
-                this.animalsEating(this.simParams.energyFromGrass);
-                this.animalCreation(this.simParams.energyNeededForNewAnimal, currentDay);
-                map.growPlants(this.simParams.numOfGrassGrowing);
+                this.animalsEating(this.simParams.getEnergyFromGrass());
+                this.animalCreation(this.simParams.getEnergyNeededForNewAnimal(), currentDay);
+                map.growPlants(this.simParams.getNumOfGrassGrowing());
 
                 updateAvgAnimalEnergy();
                 logAnimals(animalSet);

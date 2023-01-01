@@ -1,88 +1,80 @@
 package agh.ics.oop;
 
-import agh.ics.oop.genotype.IMutationHandler;
-import agh.ics.oop.genotype.INextActGeneGenerator;
-import agh.ics.oop.map.AbstractEvolutionMap;
-
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SimulationParameters {
-    //MAPA
-    public final int width;
-    public final int height;
-    public final int numOfInitGrass;
-    public final Variations.BoundsHandlerType boundsHandlerType;
-    public final Variations.MapGrassGrowthType grassGrowthType;
-    public final int energyFromGrass;
-    public final int numOfGrassGrowing;
-    public final int numOfInitAnimals;
-    public final int startAnimalEnergy;
-    public final int energyNeededForNewAnimal;
-    public final int energyLossForNewAnimal;
-    public final int minNumOfMutations;
-    public final int maxNumOfMutations;
-    public final Variations.MutationHandlerType mutationHandlerType;
-    public final int genomeLength;
-    public final Variations.NextActGeneGeneratorType nextActGeneGeneratorType;
-
-    private final Map<String, Object> paramsMap = new HashMap<>();
+    private final Map<String, Object> paramsMap;
 
     public SimulationParameters(Map<String, Object> paramsMap){
-        this.width = ((BigDecimal) paramsMap.get("width")).intValue();
-        System.out.println("?????");
-        this.height = ((BigDecimal) paramsMap.get("height")).intValue();
-        this.numOfInitGrass = ((BigDecimal) paramsMap.get("numOfInitGrass")).intValue();
-        this.boundsHandlerType = (Variations.BoundsHandlerType) paramsMap.get("boundsHandlerType");
-        this.grassGrowthType = (Variations.MapGrassGrowthType) paramsMap.get("grassGrowthType");
-        this.energyFromGrass = ((BigDecimal) paramsMap.get("energyFromGrass")).intValue();
-        this.numOfGrassGrowing = ((BigDecimal) paramsMap.get("numOfGrassGrowing")).intValue();
-        this.numOfInitAnimals = ((BigDecimal) paramsMap.get("numOfInitAnimals")).intValue();
-        this.startAnimalEnergy = ((BigDecimal) paramsMap.get("startAnimalEnergy")).intValue();
-        this.energyNeededForNewAnimal = ((BigDecimal) paramsMap.get("energyNeededForNewAnimal")).intValue();
-        this.energyLossForNewAnimal = ((BigDecimal) paramsMap.get("energyLossForNewAnimal")).intValue();
-        this.minNumOfMutations = ((BigDecimal) paramsMap.get("minNumOfMutations")).intValue();
-        this.maxNumOfMutations = ((BigDecimal) paramsMap.get("maxNumOfMutations")).intValue();
-        this.mutationHandlerType = (Variations.MutationHandlerType) paramsMap.get("mutationHandlerType");
-        this.genomeLength = ((BigDecimal) paramsMap.get("genomeLength")).intValue();
-        this.nextActGeneGeneratorType = (Variations.NextActGeneGeneratorType) paramsMap.get("nextActGeneGeneratorType");
+        this.paramsMap = paramsMap;
     }
 
-    public SimulationParameters(
-            int width,
-            int height,
-            int numOfInitGrass,
-            Variations.BoundsHandlerType boundsHandlerType,
-            Variations.MapGrassGrowthType grassGrowthType,
-            int energyFromGrass,
-            int numOfGrassGrowing,
-            int numOfInitAnimals,
-            int startAnimalEnergy,
-            int energyNeededForNewAnimal,
-            int energyLossForNewAnimal,
-            int minNumOfMutations,
-            int maxNumOfMutations,
-            Variations.MutationHandlerType mutationHandlerType,
-            int genomeLength,
-            Variations.NextActGeneGeneratorType nextActGeneGeneratorType
-    ){
-        this.width = width;
-        this.height = height;
-        this.numOfInitGrass = numOfInitGrass;
-        this.boundsHandlerType = boundsHandlerType;
-        this.grassGrowthType = grassGrowthType;
-        this.energyFromGrass = energyFromGrass;
-        this.numOfGrassGrowing = numOfGrassGrowing;
-        this.numOfInitAnimals = numOfInitAnimals;
-        this.startAnimalEnergy = startAnimalEnergy;
-        this.energyNeededForNewAnimal = energyNeededForNewAnimal;
-        this.energyLossForNewAnimal = energyLossForNewAnimal;
-        this.minNumOfMutations = minNumOfMutations;
-        this.maxNumOfMutations = maxNumOfMutations;
-        this.mutationHandlerType = mutationHandlerType;
-        this.genomeLength = genomeLength;
-        this.nextActGeneGeneratorType = nextActGeneGeneratorType;
+    public String getParamsName(){
+        return (String) paramsMap.get("paramsName");
     }
 
+    public int getWidth(){
+        return Integer.parseInt((String) paramsMap.get("map width:"));
+    }
+
+    public int getHeight(){
+        return Integer.parseInt((String) paramsMap.get("map height:"));
+    }
+
+    public int getNumOfInitGrass(){
+        return Integer.parseInt((String) paramsMap.get("number of animals at start:"));
+    }
+
+    public Variations.BoundsHandlerType getBoundsHandlerType(){
+        return (Variations.BoundsHandlerType) paramsMap.get("map variant:");
+    }
+
+    public Variations.MapGrassGrowthType getGrassGrowthType(){
+        return (Variations.MapGrassGrowthType) paramsMap.get("grass growth variant:");
+    }
+
+    public int getEnergyFromGrass(){
+        return Integer.parseInt((String) paramsMap.get("energy boost from plant:"));
+    }
+
+    public int getNumOfGrassGrowing(){
+        return Integer.parseInt((String) paramsMap.get("number of plants growing daily:"));
+    }
+
+    public int getNumOfInitAnimals(){
+        return Integer.parseInt((String) paramsMap.get("number of animals at start:"));
+    }
+
+    public int getStartAnimalEnergy(){
+        return Integer.parseInt((String) paramsMap.get("animal initial energy:"));
+    }
+
+    public int getEnergyNeededForNewAnimal(){
+        return Integer.parseInt((String) paramsMap.get("energy needed for recreation:"));
+    }
+
+    public int getEnergyLossForNewAnimal(){
+        return Integer.parseInt((String) paramsMap.get("energy loss for new animal:"));
+    }
+
+    public int getMinNumOfMutations(){
+        return Integer.parseInt((String) paramsMap.get("minimum number of mutations:"));
+    }
+
+    public int getMaxNumOfMutations(){
+        return Integer.parseInt((String) paramsMap.get("maximum number of mutations:"));
+    }
+
+    public Variations.MutationHandlerType getMutationHandlerType(){
+        return (Variations.MutationHandlerType) paramsMap.get("mutation variant:");
+    }
+
+    public int getGenomeLength(){
+        return Integer.parseInt((String) paramsMap.get("genome length:"));
+    }
+
+    public Variations.NextActGeneGeneratorType getNextActGeneGeneratorType(){
+        return (Variations.NextActGeneGeneratorType) paramsMap.get("animal behavior variant:");
+    }
 }

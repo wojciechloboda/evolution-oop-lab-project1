@@ -2,6 +2,7 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.IDayPassedObserver;
 import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.SimulationParameters;
 import agh.ics.oop.Vector2d;
 import agh.ics.oop.animal.Animal;
 import agh.ics.oop.map.AbstractEvolutionMap;
@@ -19,10 +20,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserver, EventHandler {
     private final Stage simulationStage;
@@ -42,6 +45,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private BorderPane[][] gridSpots;
     private double gridSpotWidth = 0;
     private final EventHandler<ActionEvent> animalStatButtonHandler;
+    private final ArrayList<String[]> totalStats= new ArrayList<String[]>();
+    private boolean withSaving = false;
+    private String pathToStats = null;
 
     private void setUpGrid(GridPane grid, AbstractEvolutionMap map){
         int gridRowsCount = map.getRightUpperBound().y;
@@ -88,12 +94,17 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         return newGrid;
     }
 
-    public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map){
+    public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map, String pathToStats){
         engine.addDayPassedObserver(this);
         simulationStage = new Stage();
         this.map = map;
         this.map.addObserver(this);
         ImageLoader.loadImages();
+
+        if(pathToStats != null){
+            withSaving = true;
+            this.pathToStats = pathToStats;
+        }
 
         this.engine = engine;
 
@@ -137,6 +148,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         this.simulationStage.setOnCloseRequest(e ->{
             if(engineThread.isAlive()) {
                 engineThread.interrupt();
+                if(withSaving) {
+                    saveStats(pathToStats);
+                }
             }
         });
 
@@ -234,6 +248,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
         quitButton.setOnAction(e -> {
             engineThread.interrupt();
+            if(withSaving){
+                saveStats(pathToStats);
+            }
             simulationStage.close();
         });
 
@@ -247,6 +264,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     }
 
     private void updateGrid(){
+        logStats(engine, map);
         clearGrid();
         unshowBestGenome();
         if(showBestGenomeFlag){
@@ -315,4 +333,39 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
             }
         }
     }
+
+    private void logStats(SimulationEngine engine, AbstractEvolutionMap map){
+        var bestGenome = "None";
+
+        if(engine.getSortedGenotypes().size() > 0){
+            bestGenome = engine.getSortedGenotypes().get(0).getKey();
+        }
+        this.totalStats.add(new String[]
+                {
+                        Integer.toString(engine.getCurrentDay()),
+                        Integer.toString(engine.getNumOfAnimals()),
+                        Integer.toString(map.getNumOfGrass()),
+                        Integer.toString(map.getNumOfFreePositions()),
+                        bestGenome,
+                        Double.toString(engine.getAvgAnimalEnergy()),
+                        Double.toString(engine.getAvgLifetime())
+                });
+    }
+
+    private void saveStats(String path){
+        File csvOutputFile = new File(path);
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+            totalStats.stream()
+                    .map(this::convertToCSV)
+                    .forEach(pw::println);
+        }
+        catch(FileNotFoundException ex){
+            System.out.println("Problems");
+        }
+    }
+
+    public String convertToCSV(String[] data) {
+        return String.join(",", data);
+    }
+
 }

@@ -1,56 +1,71 @@
 package agh.ics.oop;
 
-import com.github.cliftonlabs.json_simple.JsonKey;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsoner;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
 
 public class JsonConfigHandler {
+    public static void saveParametersToFile(Map<String, String> paramMap, String path){
+        JsonObject object = new JsonObject();
+
+        for(var key : paramMap.keySet()){
+            object.put(key, paramMap.get(key));
+        }
+
+        try (FileWriter file = new FileWriter(path)) {
+            file.write(object.toJson());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static SimulationParameters getParametersFromFile(String path){
         try {
+            File file = new File(path);
             Reader reader = Files.newBufferedReader(Paths.get(path));
-            Variations.BoundsHandlerType boundsHandlerType;
-            Variations.MapGrassGrowthType grassGrowthType;
-            Variations.MutationHandlerType mutationHandlerType;
-            Variations.NextActGeneGeneratorType nextActGeneGeneratorType;
 
-            // create parser
             JsonObject parser = (JsonObject) Jsoner.deserialize(reader);
             HashMap<String, Object> map = new HashMap<>();
 
+            map.put("paramsName", file.getName());
+
             for(var key : parser.keySet()){
                 switch(key){
-                    case "boundsHandlerType" -> {
+                    case "map variant:" -> {
                         switch((String)parser.get(key)){
-                            case "hell" -> map.put("boundsHandlerType", Variations.BoundsHandlerType.HELL);
-                            case "earth" -> map.put("boundsHandlerType", Variations.BoundsHandlerType.EARTH);
+                            case "HELL PORTAL" -> map.put("map variant:", Variations.BoundsHandlerType.HELL);
+                            case "EARTH" -> map.put("map variant:", Variations.BoundsHandlerType.EARTH);
                             default -> System.out.println("ERROR");
                         }
                     }
-                    case "grassGrowthType" -> {
+                    case "grass growth variant:" -> {
                         switch((String)parser.get(key)){
-                            case "green" -> map.put("grassGrowthType", Variations.MapGrassGrowthType.GREEN_EQUATOR);
-                            case "toxic" -> map.put("grassGrowthType", Variations.MapGrassGrowthType.TOXIC_DEAD);
+                            case "GREEN EQUATORS" -> map.put("grass growth variant:", Variations.MapGrassGrowthType.GREEN_EQUATOR);
+                            case "TOXIC DEAD" -> map.put("grass growth variant:", Variations.MapGrassGrowthType.TOXIC_DEAD);
                             default -> System.out.println("ERROR");
                         }
                     }
-                    case "mutationHandlerType" -> {
+                    case "mutation variant:" -> {
                         switch((String)parser.get(key)){
-                            case "correction" -> map.put("mutationHandlerType", Variations.MutationHandlerType.CORRECTION);
-                            case "random" -> map.put("mutationHandlerType", Variations.MutationHandlerType.RANDOM);
+                            case "CORRECTION" -> map.put("mutation variant:", Variations.MutationHandlerType.CORRECTION);
+                            case "RANDOM" -> map.put("mutation variant:", Variations.MutationHandlerType.RANDOM);
                             default -> System.out.println("ERROR");
                         }
                     }
-                    case "nextActGeneGeneratorType" -> {
+                    case "animal behavior variant:" -> {
                         switch((String)(parser.get(key))){
-                            case "stable" -> map.put("nextActGeneGeneratorType", Variations.NextActGeneGeneratorType.STABLE);
-                            case "crazy" -> map.put("nextActGeneGeneratorType", Variations.NextActGeneGeneratorType.CRAZY);
+                            case "PREDESTINATION" -> map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.STABLE);
+                            case "CRAZINESS" -> map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.CRAZY);
                             default -> System.out.println("ERROR");
                         }
                     }
@@ -62,6 +77,7 @@ public class JsonConfigHandler {
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
+            System.exit(2);
         }
         return null;
     }

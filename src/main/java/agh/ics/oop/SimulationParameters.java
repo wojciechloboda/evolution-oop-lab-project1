@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SimulationParameters {
+    //MAPA
     public final int width;
     public final int height;
     public final int numOfInitGrass;

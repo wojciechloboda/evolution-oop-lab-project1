@@ -6,24 +6,30 @@ import agh.ics.oop.map.MapCreator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class App extends Application{
-    /*
-    private AbstractWorldMap map;
+    private final int windowWidth = 1000;
+    private final int windowHeight = 600;
+    private BorderPane right;
+    private BorderPane left;
+    private FileChooser fileChooser;
     private Stage primaryStage;
-    private GridPane grid;
-    private SimulationEngine engine;
-    private final List<GuiElementBox> elementsList = new ArrayList<>();
+    private SimulationParameters chosenSimParams = null;
+    /*
 
     private int getMapSizeInRows(){
         return map.getRightUpperBound().subtract(map.getLeftLowerBound()).y + 1;
@@ -100,59 +106,52 @@ public class App extends Application{
     @Override
     public void start(Stage primaryStage) {
         this.init();
+        this.primaryStage = primaryStage;
+        BorderPane mainPane = new BorderPane();
+        mainPane.setPrefWidth(windowWidth);
+        mainPane.setPrefHeight(windowHeight);
         SimulationParameters simParams = JsonConfigHandler.getParametersFromFile("src/main/resources/params.json");
 
-        //AbstractEvolutionMap evolutionMap = MapCreator.createMap(simParams);
-        //SimulationEngine engine = EngineCreator.createEngine(simParams, evolutionMap);
+        //TEMPORARY
+        AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
+        SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
+        GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
+        //TEMPORARY
 
-        //GuiSimulation guiSimulation = new GuiSimulation(engine, evolutionMap);
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("src/"));
 
-        //AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
-        //SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
-        //GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
+        right = setUpRightPane();
+        mainPane.setRight(setUpRightPane());
+        left = setUpLeftPane();
+        mainPane.setLeft(left);
 
-        Button start = new Button("start");
-        start.setOnAction(e ->{
-            AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(simParams);
-            SimulationEngine engine1 = EngineCreator.createEngine(simParams, evolutionMap1);
-            GuiSimulation guiSimulation1 = new GuiSimulation(engine1, evolutionMap1);
-        }
-        );
-
-        primaryStage.setScene(new Scene(start));
-
+        Scene mainScene = new Scene(mainPane);
+        primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
 
+    private BorderPane setUpLeftPane(){
+        var left = new BorderPane();
+        left.setPrefWidth(windowWidth * 0.5);
+        VBox buttonVBox = new VBox();
 
-        /*
-        grid = new GridPane();
-        grid.setGridLinesVisible(true);
-        setGridConstraints(grid);
-        setGridLegend(grid);
-        fillGridWithMapElements(grid);
+        Button createParamButton = new Button("STWORZ KONFIGURACJE");
+        createParamButton.setPrefWidth(windowWidth * 0.2);
+        buttonVBox.getChildren().add(createParamButton);
 
-        TextField directionTextField = new TextField();
+        Button chooseParamButton = createChooseButton();
+        buttonVBox.getChildren().add(chooseParamButton);
 
-        Button startButton = new Button("Start");
-        startButton.setOnAction(e -> {
-            String[] args = directionTextField.getText().split(" ");
-            var directionList = OptionsParser.parse(args);
-            engine.setDirections(directionList);
-            Thread engineThread = new Thread(engine);
-            engineThread.start();
+        Button startParamButton = new Button("ROZPOCZNIJ SYMULACJE");
+        startParamButton.setPrefWidth(windowWidth * 0.2);
+        buttonVBox.getChildren().add(startParamButton);
+        startParamButton.setDisable(true);
 
-        });
-
-        HBox hbox = new HBox(startButton, directionTextField);
-        VBox vbox = new VBox(grid, hbox);
-        Scene scene = new Scene(vbox);
-
-        this.primaryStage = primaryStage;
-        primaryStage.setScene(scene);
-
-        primaryStage.setMaximized(true);
-        primaryStage.show();
-         */
+        buttonVBox.setAlignment(Pos.CENTER);
+        buttonVBox.setSpacing(windowWidth * 0.01);
+        left.setCenter(buttonVBox);
+        return left;
     }
 
     @Override
@@ -178,22 +177,29 @@ public class App extends Application{
          */
     }
 
-    /*
-
-    private void updateGrid(){
-        grid.getChildren().retainAll(grid.getChildren().get(0));
-        setGridConstraints(grid);
-        setGridLegend(grid);
-        fillGridWithMapElements(grid);
-        primaryStage.show();
+    private Button createChooseButton(){
+        Button chooseParamButton = new Button("WYBIERZ KONFIGURACJE");
+        chooseParamButton.setPrefWidth(windowWidth * 0.2);
+        chooseParamButton.setOnAction(e -> {
+            SimulationParameters simParams = JsonConfigHandler
+                    .getParametersFromFile(fileChooser.showOpenDialog(primaryStage).getPath());
+            this.right = createParamVisRight(simParams);
+            //handlowanie errorow
+            chosenSimParams = simParams;
+        });
+        return chooseParamButton;
     }
 
-    @Override
-    public void moveHappened() {
-        Platform.runLater(this::updateGrid);
+    private BorderPane setUpRightPane(){
+        var right = new BorderPane();
+        right.setPrefWidth(windowWidth * 0.5);
+        return right;
     }
 
-    */
-
+    private BorderPane createParamVisRight(SimulationParameters params){
+        var right = new BorderPane();
+        right.setPrefWidth(windowWidth * 0.5);
+        return right;
+    }
 
 }

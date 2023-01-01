@@ -29,8 +29,8 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private final GridPane grid;
     private AnimalStatPanel right;
     private final StatPanel left;
-    private final int windowHeight = 400;
-    private final int windowWeight = 800;
+    private final int windowHeight = 600;
+    private final int windowWeight = 1000;
     private final AbstractEvolutionMap map;
     private final Thread engineThread;
     private final Map<IMapElement, GuiElementBox> mapElementToRepresentation;
@@ -125,6 +125,8 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         mainPane.setRight(dummyRight);
         mainPane.setTop(createTitle());
         mainPane.setBottom(buttonPanel);
+        mainPane.setPrefHeight(windowHeight);
+        mainPane.setPrefWidth(windowWeight);
         Scene scene = new Scene(mainPane);
 
         simulationStage.setScene(scene);

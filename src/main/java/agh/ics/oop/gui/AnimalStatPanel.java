@@ -30,8 +30,8 @@ public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
     private HBox createStatEntry(String key, String name){
         var parameterName = new Label(name);
         var parameterVal = new Label("0");
-        parameterName.setPrefWidth(width * 0.75);
-        parameterVal.setPrefWidth(width * 0.25);
+        parameterName.setPrefWidth(width * 0.50);
+        parameterVal.setPrefWidth(width * 0.50);
         parameterValMap.put(key, parameterVal);
         HBox entry = new HBox(parameterName, parameterVal);
         return entry;

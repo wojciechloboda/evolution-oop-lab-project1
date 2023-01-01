@@ -97,6 +97,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map, String pathToStats){
         engine.addDayPassedObserver(this);
         simulationStage = new Stage();
+        simulationStage.setTitle("SYMULACJA");
         this.map = map;
         this.map.addObserver(this);
         ImageLoader.loadImages();
@@ -123,7 +124,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         grid.setAlignment(Pos.CENTER);
         fillGridWithMapElements(grid, map);
 
-        this.left = new StatPanel(engine, map,windowWeight * 0.2);
+        this.left = new StatPanel(engine, map,windowWeight * 0.3);
 
         BorderPane gridPanel = new BorderPane();
         gridPanel.setMinHeight(windowHeight);
@@ -132,18 +133,17 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         //gridPanel.setStyle("-fx-background-color: #" + "ffd700");
 
         var buttonPanel = createButtonPanel();
-        var dummyRight = new BorderPane();
-        var label = new Label("Nie wybrano zwierzecia");
-        label.setPrefWidth(windowWeight * 0.2);
-        label.setAlignment(Pos.CENTER);
-        dummyRight.setPadding(new Insets(10, 10, 10, 10));
-        dummyRight.setCenter(label);
+        var dummyRight = createDummyRight(windowWeight * 0.3);
+        //var label = new Label("Nie wybrano zwierzecia");
+        //label.setPrefWidth(windowWeight * 0.2);
+        //label.setAlignment(Pos.CENTER);
+        //dummyRight.setPadding(new Insets(10, 10, 10, 10));
+        //dummyRight.setCenter(label);
 
         mainPane = new BorderPane();
         mainPane.setCenter(gridPanel);
         mainPane.setLeft(left);
         mainPane.setRight(dummyRight);
-        mainPane.setTop(createTitle());
         mainPane.setBottom(buttonPanel);
         mainPane.setPrefHeight(windowHeight);
         mainPane.setPrefWidth(windowWeight);
@@ -194,13 +194,25 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
                         chosenBox.updateElementRepresentation();
                         gridSpots[currentColumn][currentRow].setCenter(chosenBox);
                     }
-                    else{
+                    else if(mapElementToRepresentation.get((IMapElement) map.objectAt(position)) != null){
                         mapElementToRepresentation.get((IMapElement) map.objectAt(position)).updateElementRepresentation();
                         gridSpots[currentColumn][currentRow].setCenter(mapElementToRepresentation.get((IMapElement) map.objectAt(position)));
                     }
                 }
             }
         }
+    }
+
+    private BorderPane createDummyRight(Double width){
+        BorderPane pane = new BorderPane();
+        pane.setPrefWidth(width);
+        engine.addDayPassedObserver(this);
+        var content = new VBox();
+
+        content.setSpacing(10.0);
+        pane.setPadding(new Insets(10, 10, 10, 10));
+        pane.setCenter(content);
+        return pane;
     }
 
     private void clearGrid(){
@@ -212,15 +224,6 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
                 gridSpots[currentColumn][currentRow].getChildren().clear();
             }
         }
-    }
-
-
-    private Label createTitle(){
-        var titleLabel = new Label("Symulacja");
-        titleLabel.setPrefWidth(windowWeight);
-        titleLabel.setAlignment(Pos.CENTER);
-        titleLabel.setPadding(new Insets(10, 10, 10, 10));
-        return titleLabel;
     }
 
     private BorderPane createButtonPanel(){
@@ -297,7 +300,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         GuiElementBox currentBox = ((GuiElementBox)event.getSource());
         if(chosenBox == null){
             ((GuiElementBox) event.getSource()).highlight();
-            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.2, animalStatButtonHandler);
+            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
             this.mainPane.setRight(this.right);
             chosenBox = currentBox;
         }
@@ -305,7 +308,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
             chosenBox.removeHighlight();
             ((GuiElementBox) event.getSource()).highlight();
             engine.removeDayPassedObserver(this.right);
-            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.2, animalStatButtonHandler);
+            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
             this.mainPane.setRight(this.right);
             chosenBox = currentBox;
         }

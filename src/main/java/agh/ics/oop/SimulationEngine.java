@@ -197,12 +197,17 @@ public class SimulationEngine implements IEngine, Runnable{
         return this.animalSet.size();
     }
 
-    public List<Pair<String, Integer>> getSortedGenotypes(){
-        List<Pair<String, Integer>> genomeList = new ArrayList<>();
-        for(var key : this.genotypes.keySet()){
-            genomeList.add(new Pair<>(key, this.genotypes.get(key)));
+    public synchronized List<Pair<String, Integer>> getSortedGenotypes(){
+        try{
+            List<Pair<String, Integer>> genomeList = new ArrayList<>();
+            for(var key : this.genotypes.keySet()){
+                genomeList.add(new Pair<>(key, this.genotypes.get(key)));
+            }
+            return genomeList.stream().sorted((a, b) -> b.getValue() - a.getValue()).collect(Collectors.toList());
         }
-        return genomeList.stream().sorted((a, b) -> b.getValue() - a.getValue()).collect(Collectors.toList());
+        catch(ConcurrentModificationException ex){
+            return null;
+        }
     }
 
     public List<Animal> getAnimalsWithBestGenome(){

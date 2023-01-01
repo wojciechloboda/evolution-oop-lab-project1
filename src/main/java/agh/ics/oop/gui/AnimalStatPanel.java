@@ -48,7 +48,7 @@ public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
 
         this.setStyle("-fx-background-color: #" + "ffffff");
 
-        var title = new Label("Wybrane zwierze:");
+        var title = new Label("CHOSEN ANIMAL:");
         title.setPadding(new Insets(10,10,10,10));
         title.setMinWidth(width);
         title.setAlignment(Pos.TOP_CENTER);
@@ -56,19 +56,20 @@ public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
 
 
         content.getChildren().add(createStatEntry("status", "Status:"));
-        content.getChildren().add(createStatEntry("genome", "Genom:"));
-        content.getChildren().add(createStatEntry("actGenomePart", "Aktywna czesc genomu:"));
-        content.getChildren().add(createStatEntry("energy", "Energia:"));
-        content.getChildren().add(createStatEntry("grassEaten", "Zjedzone rosliny:"));
-        content.getChildren().add(createStatEntry("children","Ilosc dzieci:"));
-        content.getChildren().add(createStatEntry("lifeTime","Dlugosc zycia:"));
-        content.getChildren().add(createStatEntry("death", "Dzien smierci:"));
+        content.getChildren().add(createStatEntry("genome", "Genome:"));
+        content.getChildren().add(createStatEntry("actGenomePart", "Active part:"));
+        content.getChildren().add(createStatEntry("energy", "Energy:"));
+        content.getChildren().add(createStatEntry("grassEaten", "Plants eaten:"));
+        content.getChildren().add(createStatEntry("children","Number of children:"));
+        content.getChildren().add(createStatEntry("lifeTime","Lifetime:"));
+        content.getChildren().add(createStatEntry("death", "Death at:"));
 
         content.setSpacing(10.0);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setCenter(content);
 
-        var button = new Button("Przestan sledzic");
+        var button = new Button("STOP FOLLOWING");
+        button.setPrefWidth(width * 0.9);
         button.setOnAction(ev);
         content.getChildren().add(button);
 
@@ -87,7 +88,7 @@ public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
     }
 
     private void updateStats(){
-        parameterValMap.get("status").setText("Zyje");
+        parameterValMap.get("status").setText("Alive");
         parameterValMap.get("genome").setText(animal.getGenome().toString());
         parameterValMap.get("actGenomePart").setText(Integer.toString(animal.getGenome().getActGene()));
         parameterValMap.get("energy").setText(Integer.toString(animal.getEnergy()));
@@ -97,7 +98,7 @@ public class AnimalStatPanel extends BorderPane implements IDayPassedObserver {
         parameterValMap.get("death").setText(" - ");
 
         if(!engine.isAnimalAlive(animal)){
-            parameterValMap.get("status").setText("Nie zyje");
+            parameterValMap.get("status").setText("Dead");
             parameterValMap.get("actGenomePart").setText(" - ");
             parameterValMap.get("energy").setText("0");
             parameterValMap.get("death").setText(Integer.toString(engine.getCurrentDay()));

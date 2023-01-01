@@ -36,7 +36,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
 
     private BorderPane createGenomeRanking(){
         BorderPane pane = new BorderPane();
-        Label title = new Label("\n Top 5 genotypow: \n");
+        Label title = new Label("\n Top 5 genomes: \n");
         title.setMinWidth(width);
         title.setAlignment(Pos.TOP_CENTER);
         pane.setTop(title);
@@ -62,18 +62,18 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
 
         this.setStyle("-fx-background-color: #" + "ffffff");
 
-        var title = new Label("Statystyki");
+        var title = new Label("STATISTICS");
         title.setPadding(new Insets(10,10,10,10));
         title.setMinWidth(width);
         title.setAlignment(Pos.TOP_CENTER);
         this.setTop(title);
 
-        content.getChildren().add(createStatEntry("currentDay", "Dzien:"));
-        content.getChildren().add(createStatEntry("numOfAnimals", "Zwierzeta:"));
-        content.getChildren().add(createStatEntry("numOfGrass", "Rosliny:"));
-        content.getChildren().add(createStatEntry("numOfFreePos", "Wolne pola:"));
-        content.getChildren().add(createStatEntry("avgEnergy", "Sr energia:"));
-        content.getChildren().add(createStatEntry("avgLifeTime","Sr dlugosc zycia:"));
+        content.getChildren().add(createStatEntry("currentDay", "Day:"));
+        content.getChildren().add(createStatEntry("numOfAnimals", "Animals:"));
+        content.getChildren().add(createStatEntry("numOfGrass", "Plants:"));
+        content.getChildren().add(createStatEntry("numOfFreePos", "Free spots:"));
+        content.getChildren().add(createStatEntry("avgEnergy", "Avg energy:"));
+        content.getChildren().add(createStatEntry("avgLifeTime","Avf lifetime:"));
 
         content.getChildren().add(createGenomeRanking());
         content.setSpacing(10.0);
@@ -98,6 +98,9 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
 
     private void updateGenotypeRanking(){
         StringBuilder bld = new StringBuilder();
+        if(this.engine.getSortedGenotypes() == null){
+            return;
+        }
 
         for(int i = 1; i <= 5; i++){
             if(i > this.engine.getSortedGenotypes().size()){

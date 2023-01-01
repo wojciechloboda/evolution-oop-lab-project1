@@ -97,7 +97,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map, String pathToStats){
         engine.addDayPassedObserver(this);
         simulationStage = new Stage();
-        simulationStage.setTitle("SYMULACJA");
+        simulationStage.setTitle("SIMULATION");
         this.map = map;
         this.map.addObserver(this);
         ImageLoader.loadImages();
@@ -222,9 +222,13 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private BorderPane createButtonPanel(){
         BorderPane buttonPanel = new BorderPane();
         Button startButton = new Button("START");
-        Button stopButton = new Button("||");
+        Button stopButton = new Button("PAUSE");
         Button quitButton = new Button("END");
         Button bestGenome = new Button("MARK BEST GENOME");
+        stopButton.setPrefWidth(windowWeight * 0.1);
+        startButton.setPrefWidth(windowWeight * 0.1);
+        quitButton.setPrefWidth(windowWeight * 0.1);
+        stopButton.setDisable(true);
 
         bestGenome.setOnAction(e ->{
             if(!showBestGenomeFlag){
@@ -237,18 +241,24 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         });
 
         startButton.setOnAction(e -> {
-            if(engineThread.getState().equals(Thread.State.WAITING)){
-                synchronized (engine){
-                    engine.notify();
-                }
-            }
-            else if (engineThread.getState().equals(Thread.State.NEW)){
+            if (engineThread.getState().equals(Thread.State.NEW)){
                 engineThread.start();
+                stopButton.setDisable(false);
+                startButton.setDisable(true);
             }
         });
 
         stopButton.setOnAction(e -> {
-            this.engine.setPaused();
+            if(engineThread.getState().equals(Thread.State.WAITING)){
+                synchronized (engine){
+                    engine.notify();
+                }
+                stopButton.setText("PAUSE");
+            }
+            else{
+                this.engine.setPaused();
+                stopButton.setText("RESUME");
+            }
         });
 
         quitButton.setOnAction(e -> {
@@ -341,9 +351,10 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
     private void logStats(SimulationEngine engine, AbstractEvolutionMap map){
         var bestGenome = "None";
-
-        if(engine.getSortedGenotypes().size() > 0){
-            bestGenome = engine.getSortedGenotypes().get(0).getKey();
+        if(engine.getSortedGenotypes() != null) {
+            if (engine.getSortedGenotypes().size() > 0) {
+                bestGenome = engine.getSortedGenotypes().get(0).getKey();
+            }
         }
         this.totalStats.add(new String[]
                 {

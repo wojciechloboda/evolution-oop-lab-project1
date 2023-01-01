@@ -90,7 +90,6 @@ public class App extends Application{
     private Button createStartButton(){
         Button startParamButton = new Button("RUN SIMULATION");
         startParamButton.setPrefWidth(windowWidth * 0.2);
-        //buttonVBox.getChildren().add(startParamButton);
         startParamButton.setDisable(true);
         startParamButton.setOnAction(e -> {
             AbstractEvolutionMap evolutionMap1 = MapCreator.createMap(chosenSimParams);

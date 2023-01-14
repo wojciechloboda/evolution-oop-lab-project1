@@ -7,12 +7,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class GenomeGenerator {
-    private final Random rand = new Random();
+    private static final Random rand = new Random();
     private final IMutationHandler mutationHandler;
     private final int minNumOfMutations;
     private final int maxNumOfMutations;
 
-    public GenomeGenerator(IMutationHandler mutationHandler, int minNumOfMutations, int maxNumOfMutations){
+    public GenomeGenerator(IMutationHandler mutationHandler, int minNumOfMutations, int maxNumOfMutations) {
         this.mutationHandler = mutationHandler;
         this.minNumOfMutations = minNumOfMutations;
         this.maxNumOfMutations = maxNumOfMutations;
@@ -22,7 +22,7 @@ public class GenomeGenerator {
     public List<Integer> createGenome(Animal firstAnimal, Animal secondAnimal) {
         int genomeLength = firstAnimal.getGenome().getGenotypeSize();
         List<Integer> genome;
-        if(firstAnimal.getEnergy() < secondAnimal.getEnergy()){
+        if (firstAnimal.getEnergy() < secondAnimal.getEnergy()) {
             var tmp = firstAnimal;
             firstAnimal = secondAnimal;
             secondAnimal = tmp;
@@ -31,9 +31,9 @@ public class GenomeGenerator {
         int totalEnergy = firstAnimal.getEnergy() + secondAnimal.getEnergy();
 
 
-        int lim = (int)(((double)firstAnimal.getEnergy() / (double)totalEnergy) * genomeLength);
+        int lim = (int) (((double) firstAnimal.getEnergy() / (double) totalEnergy) * genomeLength);
 
-        if(rand.nextInt(2) == 0){
+        if (rand.nextInt(2) == 0) {
             genome = firstAnimal.getGenome().getActualGenotype()
                     .stream()
                     .limit(lim)
@@ -42,8 +42,7 @@ public class GenomeGenerator {
                     .stream()
                     .skip(lim)
                     .collect(Collectors.toList()));
-        }
-        else{
+        } else {
             genome = secondAnimal.getGenome().getActualGenotype()
                     .stream()
                     .limit(genomeLength - lim)

@@ -24,7 +24,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
     private final AbstractEvolutionMap map;
     private final Label genomeRankedContent = new Label();
 
-    private HBox createStatEntry(String key, String name){
+    private HBox createStatEntry(String key, String name) {
         var parameterName = new Label(name);
         var parameterVal = new Label("0");
         parameterName.setPrefWidth(width * 0.75);
@@ -34,7 +34,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         return entry;
     }
 
-    private BorderPane createGenomeRanking(){
+    private BorderPane createGenomeRanking() {
         BorderPane pane = new BorderPane();
         Label title = new Label("\n Top 5 genomes: \n");
         title.setMinWidth(width);
@@ -42,7 +42,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         pane.setTop(title);
         StringBuilder bld = new StringBuilder();
 
-        for(int i = 1; i <= 5; i++){
+        for (int i = 1; i <= 5; i++) {
             bld.append(i).append(". --- \n");
         }
 
@@ -51,7 +51,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         return pane;
     }
 
-    public StatPanel(SimulationEngine engine, AbstractEvolutionMap map, Double width){
+    public StatPanel(SimulationEngine engine, AbstractEvolutionMap map, Double width) {
         super();
         this.width = width;
         this.engine = engine;
@@ -63,7 +63,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         this.setStyle("-fx-background-color: #" + "ffffff");
 
         var title = new Label("STATISTICS");
-        title.setPadding(new Insets(10,10,10,10));
+        title.setPadding(new Insets(10, 10, 10, 10));
         title.setMinWidth(width);
         title.setAlignment(Pos.TOP_CENTER);
         this.setTop(title);
@@ -73,7 +73,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         content.getChildren().add(createStatEntry("numOfGrass", "Plants:"));
         content.getChildren().add(createStatEntry("numOfFreePos", "Free spots:"));
         content.getChildren().add(createStatEntry("avgEnergy", "Avg energy:"));
-        content.getChildren().add(createStatEntry("avgLifeTime","Avf lifetime:"));
+        content.getChildren().add(createStatEntry("avgLifeTime", "Avf lifetime:"));
 
         content.getChildren().add(createGenomeRanking());
         content.setSpacing(10.0);
@@ -87,7 +87,7 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         Platform.runLater(this::updateGenotypeRanking);
     }
 
-    private void updateStats(){
+    private void updateStats() {
         parameterValMap.get("currentDay").setText(Integer.toString(engine.getCurrentDay()));
         parameterValMap.get("numOfAnimals").setText(Integer.toString(engine.getNumOfAnimals()));
         parameterValMap.get("numOfGrass").setText(Integer.toString(map.getNumOfGrass()));
@@ -96,17 +96,16 @@ public class StatPanel extends BorderPane implements IDayPassedObserver {
         parameterValMap.get("avgLifeTime").setText(String.format("%.2f", engine.getAvgLifetime()));
     }
 
-    private void updateGenotypeRanking(){
+    private void updateGenotypeRanking() {
         StringBuilder bld = new StringBuilder();
-        if(this.engine.getSortedGenotypes() == null){
+        if (this.engine.getSortedGenotypes() == null) {
             return;
         }
 
-        for(int i = 1; i <= 5; i++){
-            if(i > this.engine.getSortedGenotypes().size()){
+        for (int i = 1; i <= 5; i++) {
+            if (i > this.engine.getSortedGenotypes().size()) {
                 bld.append(i).append(". --- \n");
-            }
-            else{
+            } else {
                 var genome = this.engine.getSortedGenotypes().get(i - 1);
                 bld.append(i).append(". ").append(genome.getKey()).append("\n");
             }

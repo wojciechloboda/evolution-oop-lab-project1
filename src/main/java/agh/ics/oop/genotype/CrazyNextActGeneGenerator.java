@@ -9,7 +9,7 @@ public class CrazyNextActGeneGenerator implements INextActGeneGenerator {
 
     public int nextActGeneIdx(int currentGeneIdx, int genomeSize) {
 
-        if(rand.nextInt(100) >= 80){
+        if (rand.nextInt(100) >= 80) {
 
 
             int next = IntStream.range(0, genomeSize)

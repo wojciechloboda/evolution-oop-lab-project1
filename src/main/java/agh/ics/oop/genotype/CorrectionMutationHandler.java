@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CorrectionMutationHandler implements IMutationHandler {
-    private Random rand = new Random();
+    private static Random rand = new Random();
 
     @Override
     public void mutate(List<Integer> genome, int minNumOfMutations, int maxNumOfMutations) {
@@ -21,13 +21,12 @@ public class CorrectionMutationHandler implements IMutationHandler {
         Collections.shuffle(indecies);
         int numOfMutated = minNumOfMutations + rand.nextInt(maxNumOfMutations - minNumOfMutations + 1);
 
-        for(int i = 0; i < numOfMutated; i++){
+        for (int i = 0; i < numOfMutated; i++) {
             int idx = indecies.get(i);
 
-            if(rand.nextInt(2) == 0){
+            if (rand.nextInt(2) == 0) {
                 genome.set(idx, Math.floorMod(genome.get(idx) + 1, 8));
-            }
-            else{
+            } else {
                 genome.set(idx, Math.floorMod(genome.get(idx) - 1, 8));
             }
         }

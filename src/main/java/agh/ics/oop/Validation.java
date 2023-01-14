@@ -3,8 +3,8 @@ package agh.ics.oop;
 import java.util.Map;
 
 public class Validation {
-    public static boolean validate(Map<String, String> paramMap){
-        try{
+    public static boolean validate(Map<String, String> paramMap) {
+        try {
             var height = Integer.parseInt((String) paramMap.get("map height:"));
             var width = Integer.parseInt((String) paramMap.get("map width:"));
             var numOfInitPlants = Integer.parseInt((String) paramMap.get("number of plants at start:"));
@@ -18,7 +18,7 @@ public class Validation {
             var maxNumMutations = Integer.parseInt((String) paramMap.get("maximum number of mutations:"));
             var genomeLength = Integer.parseInt((String) paramMap.get("genome length:"));
 
-            if(paramMap.get("map variant:").equals("-") ||
+            if (paramMap.get("map variant:").equals("-") ||
                     paramMap.get("grass growth variant:").equals("-") ||
                     paramMap.get("mutation variant:").equals("-") ||
                     paramMap.get("animal behavior variant:").equals("-") ||
@@ -34,11 +34,10 @@ public class Validation {
                     minNumMutations > maxNumMutations ||
                     maxNumMutations > genomeLength ||
                     genomeLength <= 0
-            ){
+            ) {
                 return false;
             }
-        }
-        catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
 

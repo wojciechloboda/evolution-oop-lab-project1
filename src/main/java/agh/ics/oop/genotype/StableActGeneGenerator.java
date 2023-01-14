@@ -1,4 +1,5 @@
 package agh.ics.oop.genotype;
+
 import agh.ics.oop.genotype.INextActGeneGenerator;
 
 public class StableActGeneGenerator implements INextActGeneGenerator {

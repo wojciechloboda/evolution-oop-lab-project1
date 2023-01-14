@@ -1,4 +1,5 @@
 package agh.ics.oop.gui;
+
 import agh.ics.oop.IMapElementType;
 import agh.ics.oop.animal.Animal;
 import agh.ics.oop.map.Grass;
@@ -25,7 +26,7 @@ public class GuiElementBox extends BorderPane {
     private final int topEnergy = 30;
     private final double size;
 
-    public IMapElement getElement(){
+    public IMapElement getElement() {
         return this.element;
     }
 
@@ -33,10 +34,9 @@ public class GuiElementBox extends BorderPane {
         this.size = size;
         imageView = new ImageView();
         this.element = element;
-        if(element instanceof Grass){
+        if (element instanceof Grass) {
             imageView.setImage(ImageLoader.getImage(IMapElementType.GRASS));
-        }
-        else{
+        } else {
             imageView.setImage(ImageLoader.getImage(IMapElementType.ANIMAL));
         }
 
@@ -45,23 +45,23 @@ public class GuiElementBox extends BorderPane {
         this.setCenter(imageView);
     }
 
-    public void updateElementRepresentation(){
-        if(element instanceof Animal){
+    public void updateElementRepresentation() {
+        if (element instanceof Animal) {
             imageView.setEffect(getColorAdjust(((Animal) element).getEnergy()));
         }
     }
 
-    private ColorAdjust getColorAdjust(int energy){
+    private ColorAdjust getColorAdjust(int energy) {
         ColorAdjust adj = new ColorAdjust();
-        adj.setBrightness((-2.0 * (Math.min(energy, topEnergy)) / ((double)topEnergy)) + 1.0);
+        adj.setBrightness((-2.0 * (Math.min(energy, topEnergy)) / ((double) topEnergy)) + 1.0);
         return adj;
     }
 
-    public void highlight(){
+    public void highlight() {
         this.setStyle("-fx-background-color: " + "rgb(162,16,16)");
     }
 
-    public void removeHighlight(){
+    public void removeHighlight() {
         this.setStyle("");
     }
 }

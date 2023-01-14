@@ -45,36 +45,36 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
     private BorderPane[][] gridSpots;
     private double gridSpotWidth = 0;
     private final EventHandler<ActionEvent> animalStatButtonHandler;
-    private final ArrayList<String[]> totalStats= new ArrayList<String[]>();
+    private final ArrayList<String[]> totalStats = new ArrayList<String[]>();
     private boolean withSaving = false;
     private String pathToStats = null;
 
-    private void setUpGrid(GridPane grid, AbstractEvolutionMap map){
+    private void setUpGrid(GridPane grid, AbstractEvolutionMap map) {
         int gridRowsCount = map.getRightUpperBound().y;
         int gridColumnsCount = map.getRightUpperBound().x;
 
-        double width = (windowWeight* 0.40 / Math.max(gridRowsCount, gridColumnsCount));
+        double width = (windowWeight * 0.40 / Math.max(gridRowsCount, gridColumnsCount));
         double height = (windowWeight * 0.40 / Math.max(gridRowsCount, gridColumnsCount));
         this.gridSpotWidth = width;
 
         grid.getRowConstraints().clear();
         grid.getColumnConstraints().clear();
 
-        for(int i = 0; i <= gridRowsCount; i++){
+        for (int i = 0; i <= gridRowsCount; i++) {
             grid.getRowConstraints().add(new RowConstraints(height));
         }
 
-        for(int i = 0; i <= gridColumnsCount; i++){
+        for (int i = 0; i <= gridColumnsCount; i++) {
             grid.getColumnConstraints().add(new ColumnConstraints(width));
         }
 
         gridSpots = new BorderPane[gridColumnsCount + 1][gridRowsCount + 1];
 
-        for(int i = 0; i <= gridColumnsCount; i++){
-            for(int j = 0; j <= gridRowsCount; j++){
+        for (int i = 0; i <= gridColumnsCount; i++) {
+            for (int j = 0; j <= gridRowsCount; j++) {
                 gridSpots[i][j] = new BorderPane();
                 gridSpots[i][j].setStyle(
-                                "-fx-background-color: #9ce738;" +
+                        "-fx-background-color: #9ce738;" +
                                 "-fx-border-width:" + Double.toString(width * 0.05) + ";" +
                                 "-fx-border-color: #ffffff;"
                 );
@@ -87,14 +87,14 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         );
     }
 
-    private GridPane createGrid(AbstractEvolutionMap map){
+    private GridPane createGrid(AbstractEvolutionMap map) {
         GridPane newGrid = new GridPane();
         setUpGrid(newGrid, map);
 
         return newGrid;
     }
 
-    public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map, String pathToStats){
+    public GuiSimulation(SimulationEngine engine, AbstractEvolutionMap map, String pathToStats) {
         engine.addDayPassedObserver(this);
         simulationStage = new Stage();
         simulationStage.setTitle("SIMULATION");
@@ -102,7 +102,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         this.map.addObserver(this);
         ImageLoader.loadImages();
 
-        if(pathToStats != null){
+        if (pathToStats != null) {
             withSaving = true;
             this.pathToStats = pathToStats;
             totalStats.add(new String[]{
@@ -124,7 +124,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         grid.setAlignment(Pos.CENTER);
         fillGridWithMapElements(grid, map);
 
-        this.left = new StatPanel(engine, map,windowWeight * 0.3);
+        this.left = new StatPanel(engine, map, windowWeight * 0.3);
 
         BorderPane gridPanel = new BorderPane();
         gridPanel.setMinHeight(windowHeight);
@@ -149,10 +149,10 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
         this.engineThread = new Thread(engine);
 
-        this.simulationStage.setOnCloseRequest(e ->{
-            if(engineThread.isAlive()) {
+        this.simulationStage.setOnCloseRequest(e -> {
+            if (engineThread.isAlive()) {
                 engineThread.interrupt();
-                if(withSaving) {
+                if (withSaving) {
                     saveStats(pathToStats);
                 }
             }
@@ -165,31 +165,30 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         };
     }
 
-    private void fillGridWithMapElements(GridPane grid, AbstractEvolutionMap map){
+    private void fillGridWithMapElements(GridPane grid, AbstractEvolutionMap map) {
         int gridInsideHeight = map.getRightUpperBound().y;
 
-        for(int x = 0; x <= map.getRightUpperBound().x; x++){
-            for(int y = 0; y <= map.getRightUpperBound().y; y++){
+        for (int x = 0; x <= map.getRightUpperBound().x; x++) {
+            for (int y = 0; y <= map.getRightUpperBound().y; y++) {
                 Vector2d position = new Vector2d(x, y);
-                if(map.isOccupied(position)){
+                if (map.isOccupied(position)) {
                     IMapElement elem = (IMapElement) map.objectAt(position);
                     int currentColumn = x;
                     int currentRow = gridInsideHeight - (y - map.getLeftLowerBound().y);
                     var newGuiElement = new GuiElementBox(grid.getColumnConstraints().get(0).getPrefWidth(), elem);
 
-                    if(mapElementToRepresentation.get(elem) == null){
-                        if(elem instanceof Animal){
+                    if (mapElementToRepresentation.get(elem) == null) {
+                        if (elem instanceof Animal) {
                             newGuiElement.setOnMouseClicked(this);
                         }
                         mapElementToRepresentation.put(elem, newGuiElement);
                     }
 
-                    if(chosenBox != null && chosenBox.getElement().isAt(position) &&
-                            engine.isAnimalAlive((Animal)chosenBox.getElement())){
+                    if (chosenBox != null && chosenBox.getElement().isAt(position) &&
+                            engine.isAnimalAlive((Animal) chosenBox.getElement())) {
                         chosenBox.updateElementRepresentation();
                         gridSpots[currentColumn][currentRow].setCenter(chosenBox);
-                    }
-                    else if(mapElementToRepresentation.get((IMapElement) map.objectAt(position)) != null){
+                    } else if (mapElementToRepresentation.get((IMapElement) map.objectAt(position)) != null) {
                         mapElementToRepresentation.get((IMapElement) map.objectAt(position)).updateElementRepresentation();
                         gridSpots[currentColumn][currentRow].setCenter(mapElementToRepresentation.get((IMapElement) map.objectAt(position)));
                     }
@@ -198,7 +197,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         }
     }
 
-    private BorderPane createDummyRight(Double width){
+    private BorderPane createDummyRight(Double width) {
         BorderPane pane = new BorderPane();
         pane.setPrefWidth(width);
         var content = new BorderPane();
@@ -208,9 +207,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         return pane;
     }
 
-    private void clearGrid(){
+    private void clearGrid() {
         int gridInsideHeight = map.getRightUpperBound().y;
-        for(int x = 0; x <= map.getRightUpperBound().x; x++) {
+        for (int x = 0; x <= map.getRightUpperBound().x; x++) {
             for (int y = 0; y <= map.getRightUpperBound().y; y++) {
                 int currentColumn = x;
                 int currentRow = gridInsideHeight - (y - map.getLeftLowerBound().y);
@@ -219,7 +218,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         }
     }
 
-    private BorderPane createButtonPanel(){
+    private BorderPane createButtonPanel() {
         BorderPane buttonPanel = new BorderPane();
         Button startButton = new Button("START");
         Button stopButton = new Button("PAUSE");
@@ -230,18 +229,17 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         quitButton.setPrefWidth(windowWeight * 0.1);
         stopButton.setDisable(true);
 
-        bestGenome.setOnAction(e ->{
-            if(!showBestGenomeFlag){
+        bestGenome.setOnAction(e -> {
+            if (!showBestGenomeFlag) {
                 showBestGenome();
-            }
-            else{
+            } else {
                 unshowBestGenome();
             }
             showBestGenomeFlag = !showBestGenomeFlag;
         });
 
         startButton.setOnAction(e -> {
-            if (engineThread.getState().equals(Thread.State.NEW)){
+            if (engineThread.getState().equals(Thread.State.NEW)) {
                 engineThread.start();
                 stopButton.setDisable(false);
                 startButton.setDisable(true);
@@ -249,13 +247,12 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         });
 
         stopButton.setOnAction(e -> {
-            if(engineThread.getState().equals(Thread.State.WAITING)){
-                synchronized (engine){
+            if (engineThread.getState().equals(Thread.State.WAITING)) {
+                synchronized (engine) {
                     engine.notify();
                 }
                 stopButton.setText("PAUSE");
-            }
-            else{
+            } else {
                 this.engine.setPaused();
                 stopButton.setText("RESUME");
             }
@@ -263,7 +260,7 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
         quitButton.setOnAction(e -> {
             engineThread.interrupt();
-            if(withSaving){
+            if (withSaving) {
                 saveStats(pathToStats);
             }
             simulationStage.close();
@@ -278,11 +275,11 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         return buttonPanel;
     }
 
-    private void updateGrid(){
+    private void updateGrid() {
         logStats(engine, map);
         clearGrid();
         unshowBestGenome();
-        if(showBestGenomeFlag){
+        if (showBestGenomeFlag) {
             showBestGenome();
         }
         fillGridWithMapElements(grid, map);
@@ -300,46 +297,45 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
 
     @Override
     public void handle(Event event) {
-        GuiElementBox currentBox = ((GuiElementBox)event.getSource());
-        if(chosenBox == null){
+        GuiElementBox currentBox = ((GuiElementBox) event.getSource());
+        if (chosenBox == null) {
             ((GuiElementBox) event.getSource()).highlight();
-            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
+            this.right = new AnimalStatPanel(this.engine, (Animal) currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
             this.mainPane.setRight(this.right);
             chosenBox = currentBox;
-        }
-        else{
+        } else {
             chosenBox.removeHighlight();
             ((GuiElementBox) event.getSource()).highlight();
             engine.removeDayPassedObserver(this.right);
-            this.right = new AnimalStatPanel(this.engine, (Animal)currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
+            this.right = new AnimalStatPanel(this.engine, (Animal) currentBox.getElement(), windowWeight * 0.3, animalStatButtonHandler);
             this.mainPane.setRight(this.right);
             chosenBox = currentBox;
         }
     }
 
-    private void showBestGenome(){
+    private void showBestGenome() {
         int gridInsideHeight = map.getRightUpperBound().y;
         var animals = engine.getAnimalsWithBestGenome();
         bestGenomePanes.clear();
-        if(animals == null){
+        if (animals == null) {
             return;
         }
 
-        for(var animal : animals){
+        for (var animal : animals) {
             int currentColumn = animal.getPosition().x;
             int currentRow = gridInsideHeight - (animal.getPosition().y - map.getLeftLowerBound().y);
 
             bestGenomePanes.add(gridSpots[currentColumn][currentRow]);
             gridSpots[currentColumn][currentRow].setStyle(
                     "-fx-background-color: rgb(16,57,162);" + "-fx-border-width:" + Double.toString(gridSpotWidth * 0.05) + ";" +
-                    "-fx-border-color: rgb(255,255,255);"
+                            "-fx-border-color: rgb(255,255,255);"
             );
         }
     }
 
-    private void unshowBestGenome(){
-        for(var box : bestGenomePanes){
-            if(box != null){
+    private void unshowBestGenome() {
+        for (var box : bestGenomePanes) {
+            if (box != null) {
                 box.setStyle(
                         "-fx-background-color: #9ce738;" +
                                 "-fx-border-width:" + Double.toString(gridSpotWidth * 0.05) + ";" +
@@ -349,9 +345,9 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
         }
     }
 
-    private void logStats(SimulationEngine engine, AbstractEvolutionMap map){
+    private void logStats(SimulationEngine engine, AbstractEvolutionMap map) {
         var bestGenome = "None";
-        if(engine.getSortedGenotypes() != null) {
+        if (engine.getSortedGenotypes() != null) {
             if (engine.getSortedGenotypes().size() > 0) {
                 bestGenome = engine.getSortedGenotypes().get(0).getKey();
             }
@@ -368,14 +364,13 @@ public class GuiSimulation implements IDayPassedObserver, IElementRemovedObserve
                 });
     }
 
-    private void saveStats(String path){
+    private void saveStats(String path) {
         File csvOutputFile = new File(path);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
             totalStats.stream()
                     .map(this::convertToCSV)
                     .forEach(pw::println);
-        }
-        catch(FileNotFoundException ex){
+        } catch (FileNotFoundException ex) {
             System.exit(2);
         }
     }

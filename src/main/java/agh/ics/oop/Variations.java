@@ -1,22 +1,22 @@
 package agh.ics.oop;
 
 public class Variations {
-    public enum MapGrassGrowthType{
+    public enum MapGrassGrowthType {
         GREEN_EQUATOR,
         TOXIC_DEAD
     }
 
-    public enum BoundsHandlerType{
+    public enum BoundsHandlerType {
         HELL,
         EARTH
     }
 
-    public enum MutationHandlerType{
+    public enum MutationHandlerType {
         CORRECTION,
         RANDOM
     }
 
-    public enum NextActGeneGeneratorType{
+    public enum NextActGeneGeneratorType {
         STABLE,
         CRAZY
     }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Animal implements IMapElement, Comparable<Animal>{
+public class Animal implements IMapElement, Comparable<Animal> {
     protected Vector2d position;
     protected final AbstractEvolutionMap map;
     private final Genotype genotype;
@@ -23,12 +23,12 @@ public class Animal implements IMapElement, Comparable<Animal>{
     private int grassEaten;
 
 
-    public String toString(){
+    public String toString() {
         return "Animal";
     }
 
     public Animal(Genotype genotype,
-                  Vector2d position, AbstractEvolutionMap map, int bornAtDay, int initEnergy){
+                  Vector2d position, AbstractEvolutionMap map, int bornAtDay, int initEnergy) {
         this.map = map;
         this.position = position;
         this.genotype = genotype;
@@ -40,11 +40,11 @@ public class Animal implements IMapElement, Comparable<Animal>{
         this.grassEaten = 0;
     }
 
-    public void increaseNumOfChildren(){
+    public void increaseNumOfChildren() {
         this.numOfChildren += 1;
     }
 
-    public int getBornAtDay(){
+    public int getBornAtDay() {
         return this.bornAtDay;
     }
 
@@ -56,7 +56,8 @@ public class Animal implements IMapElement, Comparable<Animal>{
 
         AnimalStateAfterMove state = map.getAnimalStateAfterMove(newPosition, mapDirection, this.energy);
         newPosition = state.position();
-        this.mapDirection = state.direction();;
+        this.mapDirection = state.direction();
+        ;
         this.energy = state.energy();
 
         Vector2d oldPosition = this.position;
@@ -70,16 +71,16 @@ public class Animal implements IMapElement, Comparable<Animal>{
         return numOfChildren;
     }
 
-    public void addPositionChangeObserver(IAnimalPositionChangeObserver observer){
+    public void addPositionChangeObserver(IAnimalPositionChangeObserver observer) {
         this.positionChangeObservers.add(observer);
     }
 
-    public void removePositionChangeObserver(IAnimalPositionChangeObserver observer){
+    public void removePositionChangeObserver(IAnimalPositionChangeObserver observer) {
         this.positionChangeObservers.remove(observer);
     }
 
-    private void notifyObservers(Vector2d oldPosition, Vector2d newPosition){
-        for(var obs : positionChangeObservers){
+    private void notifyObservers(Vector2d oldPosition, Vector2d newPosition) {
+        for (var obs : positionChangeObservers) {
             obs.positionChanged(this, oldPosition, newPosition);
         }
     }
@@ -88,12 +89,12 @@ public class Animal implements IMapElement, Comparable<Animal>{
         return this.genotype;
     }
 
-    public int getEnergy(){
+    public int getEnergy() {
         return this.energy;
     }
 
 
-    public void boostEnergy(int value){
+    public void boostEnergy(int value) {
         this.grassEaten += 1;
         this.energy += value;
     }
@@ -103,15 +104,15 @@ public class Animal implements IMapElement, Comparable<Animal>{
     }
 
 
-    public boolean isAt(Vector2d position){
+    public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
 
-    public Vector2d getPosition(){
+    public Vector2d getPosition() {
         return this.position;
     }
 
-    public ExtendedMapDirection getDirection(){
+    public ExtendedMapDirection getDirection() {
         return this.mapDirection;
     }
 
@@ -122,20 +123,18 @@ public class Animal implements IMapElement, Comparable<Animal>{
 
     @Override
     public int compareTo(Animal otherAnimal) {
-        if(this.energy == otherAnimal.getEnergy()){
-            if(this.bornAtDay == otherAnimal.getBornAtDay()){
+        if (this.energy == otherAnimal.getEnergy()) {
+            if (this.bornAtDay == otherAnimal.getBornAtDay()) {
                 return Integer.compare(-1 * this.numOfChildren, -1 * otherAnimal.getNumOfChildren());
-            }
-            else{
+            } else {
                 return Integer.compare(this.bornAtDay, otherAnimal.getBornAtDay());
             }
-        }
-        else{
+        } else {
             return Integer.compare(-1 * this.energy, -1 * otherAnimal.getEnergy());
         }
     }
 
-    public int getNumOfGrassEaten(){
+    public int getNumOfGrassEaten() {
         return this.grassEaten;
     }
 }

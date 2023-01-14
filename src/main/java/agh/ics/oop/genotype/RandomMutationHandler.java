@@ -21,7 +21,7 @@ public class RandomMutationHandler implements IMutationHandler {
         Collections.shuffle(indecies);
         int numOfMutated = minNumOfMutations + rand.nextInt(maxNumOfMutations - minNumOfMutations + 1);
 
-        for(int i = 0; i < numOfMutated; i++){
+        for (int i = 0; i < numOfMutated; i++) {
             int idx = indecies.get(i);
 
             genome.set(idx, rand.nextInt(8));

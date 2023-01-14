@@ -27,7 +27,7 @@ import java.util.Map;
 
 import agh.ics.oop.SimulationParameters;
 
-public class App extends Application{
+public class App extends Application {
     private final int windowWidth = 1000;
     private final int windowHeight = 600;
     private BorderPane right;
@@ -62,7 +62,7 @@ public class App extends Application{
         primaryStage.show();
     }
 
-    private BorderPane setUpLeftPane(){
+    private BorderPane setUpLeftPane() {
         var left = new BorderPane();
         left.setPrefWidth(windowWidth * 0.5);
         VBox buttonVBox = new VBox();
@@ -87,7 +87,7 @@ public class App extends Application{
         return left;
     }
 
-    private Button createStartButton(){
+    private Button createStartButton() {
         Button startParamButton = new Button("RUN SIMULATION");
         startParamButton.setPrefWidth(windowWidth * 0.2);
         startParamButton.setDisable(true);
@@ -99,7 +99,7 @@ public class App extends Application{
         return startParamButton;
     }
 
-    private Button createCreateButton(){
+    private Button createCreateButton() {
         Button createParamButton = new Button("CREATE CONFIGURATION");
         createParamButton.setPrefWidth(windowWidth * 0.2);
         createParamButton.setOnAction(e -> {
@@ -108,12 +108,12 @@ public class App extends Application{
         return createParamButton;
     }
 
-    private Button createChooseButton(){
+    private Button createChooseButton() {
         Button chooseParamButton = new Button("LOAD CONFIGURATION");
         chooseParamButton.setPrefWidth(windowWidth * 0.2);
         chooseParamButton.setOnAction(e -> {
             var file = fileChooser.showOpenDialog(primaryStage);
-            if(file != null){
+            if (file != null) {
                 SimulationParameters simParams = JsonConfigHandler
                         .getParametersFromFile(file.getPath());
                 chosenSimParams = simParams;
@@ -125,7 +125,7 @@ public class App extends Application{
         return chooseParamButton;
     }
 
-    private Button createStartSaveButton(){
+    private Button createStartSaveButton() {
         Button startParamButton = new Button("RUN AND SAVE SIMULATION");
         startParamButton.setPrefWidth(windowWidth * 0.2);
         startParamButton.setDisable(true);
@@ -140,13 +140,13 @@ public class App extends Application{
         return startParamButton;
     }
 
-    private BorderPane setUpRightPane(){
+    private BorderPane setUpRightPane() {
         var right = new BorderPane();
         right.setPrefWidth(windowWidth * 0.5);
         return right;
     }
 
-    private BorderPane createParamGetRight(){
+    private BorderPane createParamGetRight() {
         this.paramInputMap = new HashMap<>();
         var right = new BorderPane();
         right.setPrefWidth(windowWidth * 0.5);
@@ -159,14 +159,14 @@ public class App extends Application{
         VBox paramsBox = new VBox();
         paramsBox.setSpacing(windowHeight * 0.005); //HERE
 
-        paramsBox.getChildren().add(createParamInput("name:",  windowWidth * 0.5));
-        paramsBox.getChildren().add(createParamInput("map height:",  windowWidth * 0.5));
-        paramsBox.getChildren().add(createParamInput("map width:",  windowWidth * 0.5));
-        paramsBox.getChildren().add(createParamMenuInput("map variant:",  "HELL PORTAL", "EARTH", windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamInput("name:", windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamInput("map height:", windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamInput("map width:", windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamMenuInput("map variant:", "HELL PORTAL", "EARTH", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("number of plants at start:", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("energy boost from plant:", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("number of plants growing daily:", windowWidth * 0.5));
-        paramsBox.getChildren().add(createParamMenuInput("grass growth variant:", "GREEN EQUATORS", "TOXIC DEAD",windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamMenuInput("grass growth variant:", "GREEN EQUATORS", "TOXIC DEAD", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("number of animals at start:", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("animal initial energy:", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("energy needed for recreation:", windowWidth * 0.5));
@@ -175,7 +175,7 @@ public class App extends Application{
         paramsBox.getChildren().add(createParamInput("maximum number of mutations:", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamMenuInput("mutation variant:", "RANDOM", "CORRECTION", windowWidth * 0.5));
         paramsBox.getChildren().add(createParamInput("genome length:", windowWidth * 0.5));
-        paramsBox.getChildren().add(createParamMenuInput("animal behavior variant:", "CRAZINESS", "PREDESTINATION",windowWidth * 0.5));
+        paramsBox.getChildren().add(createParamMenuInput("animal behavior variant:", "CRAZINESS", "PREDESTINATION", windowWidth * 0.5));
 
         paramsBox.setAlignment(Pos.CENTER);
         right.setCenter(paramsBox);
@@ -184,30 +184,29 @@ public class App extends Application{
         return right;
     }
 
-    private BorderPane createSaveButtonPane(){
+    private BorderPane createSaveButtonPane() {
         BorderPane pane = new BorderPane();
         Button startButton = new Button("SAVE");
         startButton.setAlignment(Pos.BOTTOM_CENTER);
-        startButton.setOnAction(e ->{
+        startButton.setOnAction(e -> {
             Map<String, String> paramValMap = new HashMap<>();
-            for(var key : paramInputMap.keySet()){
+            for (var key : paramInputMap.keySet()) {
                 var val = paramInputMap.get(key);
-                if(val instanceof TextField){
-                    paramValMap.put(key, ((TextField)val).getText());
+                if (val instanceof TextField) {
+                    paramValMap.put(key, ((TextField) val).getText());
                 }
-                if(val instanceof MenuButton){
-                    paramValMap.put(key, ((MenuButton)val).getText());
+                if (val instanceof MenuButton) {
+                    paramValMap.put(key, ((MenuButton) val).getText());
                 }
             }
-            if(Validation.validate(paramValMap)){
+            if (Validation.validate(paramValMap)) {
                 fileChooser.setInitialFileName(paramValMap.get("name:") + ".json");
                 var file = fileChooser.showSaveDialog(primaryStage);
-                if(file != null){
+                if (file != null) {
                     var path = file.getPath();
                     JsonConfigHandler.saveParametersToFile(paramValMap, path);
                 }
-            }
-            else{
+            } else {
                 pop.show(primaryStage);
             }
         });
@@ -217,7 +216,7 @@ public class App extends Application{
         return pane;
     }
 
-    private HBox createParamMenuInput(String name, String first, String second, Double width){
+    private HBox createParamMenuInput(String name, String first, String second, Double width) {
         Label nameLabel = new Label(name);
         nameLabel.setPrefWidth(width * 0.4);
         MenuButton menu = new MenuButton("-");
@@ -238,7 +237,7 @@ public class App extends Application{
         return box;
     }
 
-    private HBox createParamInput(String name, Double width){
+    private HBox createParamInput(String name, Double width) {
         Label nameLabel = new Label(name);
         nameLabel.setPrefWidth(width * 0.4);
         TextField textField = new TextField();
@@ -249,7 +248,7 @@ public class App extends Application{
         return box;
     }
 
-    private BorderPane createParamVisRight(SimulationParameters params){
+    private BorderPane createParamVisRight(SimulationParameters params) {
         var right = new BorderPane();
         right.setPrefWidth(windowWidth * 0.5);
         BorderPane titlePane = new BorderPane();
@@ -282,7 +281,7 @@ public class App extends Application{
         return right;
     }
 
-    private HBox createParamEntry(String name, String val, Double width){
+    private HBox createParamEntry(String name, String val, Double width) {
         Label nameLabel = new Label(name);
         nameLabel.setPrefWidth(width * 0.5);
         Label valLabel = new Label(val);
@@ -292,47 +291,47 @@ public class App extends Application{
         return box;
     }
 
-    private String getBoundsHandlerString(SimulationParameters params){
-        if(params.getBoundsHandlerType().equals(Variations.BoundsHandlerType.EARTH)){
+    private String getBoundsHandlerString(SimulationParameters params) {
+        if (params.getBoundsHandlerType().equals(Variations.BoundsHandlerType.EARTH)) {
             return "EARTH";
         }
-        if(params.getBoundsHandlerType().equals(Variations.BoundsHandlerType.HELL)){
+        if (params.getBoundsHandlerType().equals(Variations.BoundsHandlerType.HELL)) {
             return "HELL PORTAL";
         }
         return "";
     }
 
-    private String getGrassGrowthString(SimulationParameters params){
-        if(params.getGrassGrowthType().equals(Variations.MapGrassGrowthType.GREEN_EQUATOR)){
+    private String getGrassGrowthString(SimulationParameters params) {
+        if (params.getGrassGrowthType().equals(Variations.MapGrassGrowthType.GREEN_EQUATOR)) {
             return "GREEN EQUATORS";
         }
-        if(params.getGrassGrowthType().equals(Variations.MapGrassGrowthType.TOXIC_DEAD)){
+        if (params.getGrassGrowthType().equals(Variations.MapGrassGrowthType.TOXIC_DEAD)) {
             return "TOXIC DEAD";
         }
         return "";
     }
 
-    private String getMutationsString(SimulationParameters params){
-        if(params.getMutationHandlerType().equals(Variations.MutationHandlerType.RANDOM)){
+    private String getMutationsString(SimulationParameters params) {
+        if (params.getMutationHandlerType().equals(Variations.MutationHandlerType.RANDOM)) {
             return "RANDOM";
         }
-        if(params.getMutationHandlerType().equals(Variations.MutationHandlerType.CORRECTION)){
+        if (params.getMutationHandlerType().equals(Variations.MutationHandlerType.CORRECTION)) {
             return "CORRECTION";
         }
         return "";
     }
 
-    private String getBehaviorString(SimulationParameters params){
-        if(params.getNextActGeneGeneratorType().equals(Variations.NextActGeneGeneratorType.CRAZY)){
+    private String getBehaviorString(SimulationParameters params) {
+        if (params.getNextActGeneGeneratorType().equals(Variations.NextActGeneGeneratorType.CRAZY)) {
             return "CRAZINESS";
         }
-        if(params.getNextActGeneGeneratorType().equals(Variations.NextActGeneGeneratorType.STABLE)){
+        if (params.getNextActGeneGeneratorType().equals(Variations.NextActGeneGeneratorType.STABLE)) {
             return "PREDESTINATION";
         }
         return "";
     }
 
-    private void setPopup(){
+    private void setPopup() {
         Label label = new Label("Bad configuration!");
         Button button = new Button("OK");
         button.setOnAction(e -> {

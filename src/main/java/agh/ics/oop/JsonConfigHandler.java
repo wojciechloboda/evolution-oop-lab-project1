@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonConfigHandler {
-    public static void saveParametersToFile(Map<String, String> paramMap, String path){
+    public static void saveParametersToFile(Map<String, String> paramMap, String path) {
         JsonObject object = new JsonObject();
 
-        for(var key : paramMap.keySet()){
+        for (var key : paramMap.keySet()) {
             object.put(key, paramMap.get(key));
         }
 
@@ -29,7 +29,7 @@ public class JsonConfigHandler {
         }
     }
 
-    public static SimulationParameters getParametersFromFile(String path){
+    public static SimulationParameters getParametersFromFile(String path) {
         try {
             File file = new File(path);
             Reader reader = Files.newBufferedReader(Paths.get(path));
@@ -39,33 +39,38 @@ public class JsonConfigHandler {
 
             map.put("paramsName", file.getName());
 
-            for(var key : parser.keySet()){
-                switch(key){
+            for (var key : parser.keySet()) {
+                switch (key) {
                     case "map variant:" -> {
-                        switch((String)parser.get(key)){
+                        switch ((String) parser.get(key)) {
                             case "HELL PORTAL" -> map.put("map variant:", Variations.BoundsHandlerType.HELL);
                             case "EARTH" -> map.put("map variant:", Variations.BoundsHandlerType.EARTH);
                             default -> System.out.println("ERROR");
                         }
                     }
                     case "grass growth variant:" -> {
-                        switch((String)parser.get(key)){
-                            case "GREEN EQUATORS" -> map.put("grass growth variant:", Variations.MapGrassGrowthType.GREEN_EQUATOR);
-                            case "TOXIC DEAD" -> map.put("grass growth variant:", Variations.MapGrassGrowthType.TOXIC_DEAD);
+                        switch ((String) parser.get(key)) {
+                            case "GREEN EQUATORS" ->
+                                    map.put("grass growth variant:", Variations.MapGrassGrowthType.GREEN_EQUATOR);
+                            case "TOXIC DEAD" ->
+                                    map.put("grass growth variant:", Variations.MapGrassGrowthType.TOXIC_DEAD);
                             default -> System.out.println("ERROR");
                         }
                     }
                     case "mutation variant:" -> {
-                        switch((String)parser.get(key)){
-                            case "CORRECTION" -> map.put("mutation variant:", Variations.MutationHandlerType.CORRECTION);
+                        switch ((String) parser.get(key)) {
+                            case "CORRECTION" ->
+                                    map.put("mutation variant:", Variations.MutationHandlerType.CORRECTION);
                             case "RANDOM" -> map.put("mutation variant:", Variations.MutationHandlerType.RANDOM);
                             default -> System.out.println("ERROR");
                         }
                     }
                     case "animal behavior variant:" -> {
-                        switch((String)(parser.get(key))){
-                            case "PREDESTINATION" -> map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.STABLE);
-                            case "CRAZINESS" -> map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.CRAZY);
+                        switch ((String) (parser.get(key))) {
+                            case "PREDESTINATION" ->
+                                    map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.STABLE);
+                            case "CRAZINESS" ->
+                                    map.put("animal behavior variant:", Variations.NextActGeneGeneratorType.CRAZY);
                             default -> System.out.println("ERROR");
                         }
                     }
@@ -74,8 +79,7 @@ public class JsonConfigHandler {
             }
 
             return new SimulationParameters(map);
-        }
-        catch(Exception ex){
+        } catch (Exception ex) { // nie wolno łapać Exception
             System.out.println(ex.getMessage());
             System.exit(2);
         }

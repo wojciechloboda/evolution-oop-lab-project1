@@ -12,16 +12,16 @@ public enum ExtendedMapDirection {
     WEST,
     NORTHWEST;
 
-    private final Vector2d uNorth = new Vector2d(0,1);
+    private final Vector2d uNorth = new Vector2d(0, 1);
     private final Vector2d uNorthEast = new Vector2d(1, 1);
-    private final Vector2d uEast = new Vector2d(1,0);
+    private final Vector2d uEast = new Vector2d(1, 0);
     private final Vector2d uSouthEast = new Vector2d(1, -1);
-    private final Vector2d uSouth = new Vector2d(0,-1);
+    private final Vector2d uSouth = new Vector2d(0, -1);
     private final Vector2d uSouthWest = new Vector2d(-1, -1);
-    private final Vector2d uWest = new Vector2d(-1,0);
-    private final Vector2d uNorthWest = new  Vector2d(-1, 1);
+    private final Vector2d uWest = new Vector2d(-1, 0);
+    private final Vector2d uNorthWest = new Vector2d(-1, 1);
 
-    public String toString(){
+    public String toString() {
         return switch (this) {
             case NORTH -> "Polnoc";
             case NORTHEAST -> "Polnocny wschod";
@@ -34,15 +34,15 @@ public enum ExtendedMapDirection {
         };
     }
 
-    public ExtendedMapDirection next(){
+    public ExtendedMapDirection next() {
         return val[(ordinal() + 1) % val.length];
     }
 
-    public ExtendedMapDirection previous(){
+    public ExtendedMapDirection previous() {
         return val[Math.floorMod(ordinal() - 1, val.length)];
     }
 
-    public Vector2d toUnitVector(){
+    public Vector2d toUnitVector() {
         return switch (this) {
             case NORTH -> uNorth;
             case NORTHEAST -> uNorthEast;
@@ -55,7 +55,7 @@ public enum ExtendedMapDirection {
         };
     }
 
-    public ExtendedMapDirection afterRotation(int turn){
+    public ExtendedMapDirection afterRotation(int turn) {
         return val[(ordinal() + turn) % val.length];
     }
 

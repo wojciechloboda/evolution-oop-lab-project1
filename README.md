@@ -1,2 +1,2 @@
-# evolution-oop-lab-project1
+# generator ewolucyjny 
 First project 'generator ewolucyjny' for objective programming course at AGH UST.
